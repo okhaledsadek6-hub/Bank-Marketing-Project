@@ -1,10 +1,12 @@
+from xmlrpc import client
+
 import streamlit as st
 import pandas as pd
 import numpy as np
 import joblib
 import matplotlib.pyplot as plt
 import os
-
+from openai import OpenAI
 
 # =========================================================
 # PAGE SETTINGS
@@ -270,10 +272,19 @@ def load_data():
         sep=";"
     )
 
+@st.cache_resource
+def load_openai():
+    if "OPENAI_API_KEY" not in st.secrets:
+        return None
+
+    return OpenAI(
+        api_key=st.secrets["OPENAI_API_KEY"]
+    )
 
 model = load_model()
 results = load_results()
 df = load_data()
+client = load_openai()
 
 # =========================================================
 # SIDEBAR
@@ -308,13 +319,64 @@ with st.sidebar:
         unsafe_allow_html=True
     )
 
-    st.markdown("---")
 
-    page = st.radio(
+def generate_prediction_explanation(
+    prediction,
+    probability,
+    customer_data,
+    feature_importance
+):
+    if client is None:
+        return "OpenAI API key is not configured."
+
+    important_features = feature_importance.head(10).to_string(
+        index=False
+    )
+
+    prompt = f"""
+You are an AI assistant inside a Bank Marketing Prediction System.
+
+The machine learning model is Logistic Regression.
+You must NOT change or invent the model prediction.
+
+Explain the existing prediction clearly and simply.
+
+Prediction:
+{prediction}
+
+Probability of subscribing:
+{probability:.2%}
+
+Customer information:
+{customer_data}
+
+Top model features:
+{important_features}
+
+Give the answer in this format:
+
+1. Prediction explanation
+2. Main factors
+3. Suggested marketing action
+
+Do not invent additional customer information.
+Do not claim that the prediction is guaranteed.
+"""
+
+    response = client.responses.create(
+        model="gpt-5.6-luna",
+        input=prompt
+    )
+
+    return response.output_text
+
+st.markdown("---")
+page = st.radio(
         "Navigation",
         [
             "🏠 Overview",
             "🔮 Make Prediction",
+            "🤖 AI Assistant",
             "📊 Data Analysis",
             "🤖 Model Performance",
             "⭐ Feature Importance",
@@ -322,9 +384,9 @@ with st.sidebar:
         ]
     )
 
-    st.markdown("---")
+st.markdown("---")
 
-    st.caption(
+st.caption(
         "Machine Learning Project"
     )
 
@@ -512,6 +574,7 @@ elif page == "🔮 Make Prediction":
         '</div>',
         unsafe_allow_html=True
     )
+
 
     # ---------------------------------------------
     # CUSTOMER INFORMATION
@@ -800,6 +863,149 @@ elif page == "🔮 Make Prediction":
             st.progress(
                 float(no_probability)
             )
+
+# ---------------------------------------------
+        # AI PREDICTION EXPLANATION
+        # ---------------------------------------------
+
+        st.markdown(
+            '<div class="section-title">'
+            '🤖 AI Prediction Explanation'
+            '</div>',
+            unsafe_allow_html=True
+        )
+
+        if client is None:
+
+            st.info(
+                "AI explanation is unavailable because "
+                "the OpenAI API key has not been configured."
+            )
+
+        else:
+
+            if st.button(
+                "✨ Explain This Prediction with AI",
+                use_container_width=True
+            ):
+
+                customer_data = input_data.iloc[0].to_dict()
+
+                with st.spinner(
+                    "Generating AI explanation..."
+                ):
+
+                    explanation = generate_prediction_explanation(
+                        prediction,
+                        yes_probability,
+                        customer_data,
+                        results["feature_importance"]
+                    )
+
+                st.info(explanation)
+
+                
+# =========================================================
+# AI ASSISTANT
+# =========================================================
+
+elif page == "🤖 AI Assistant":
+
+    st.markdown(
+        '<div class="main-title">AI Marketing Assistant</div>',
+        unsafe_allow_html=True
+    )
+
+    st.markdown(
+        """
+        <div class="subtitle">
+        Ask questions about the Bank Marketing prediction system,
+        machine learning results, and marketing insights.
+        </div>
+        """,
+        unsafe_allow_html=True
+    )
+
+    if client is None:
+
+        st.warning(
+            "OpenAI API key is not configured."
+        )
+
+    else:
+
+        question = st.text_area(
+            "Ask the AI Assistant",
+            placeholder=(
+                "Example: What does ROC-AUC mean?\n"
+                "Why is Logistic Regression used?\n"
+                "Which features are most important?"
+            ),
+            height=120
+        )
+
+        if st.button("Ask AI"):
+
+            if question.strip():
+
+                feature_info = (
+                    results["feature_importance"]
+                    .head(10)
+                    .to_string(index=False)
+                )
+
+                prompt = f"""
+You are the AI assistant for a Bank Marketing
+Prediction Machine Learning project.
+
+Answer the question clearly and simply.
+
+Model:
+Logistic Regression
+
+Accuracy:
+{results["accuracy"]:.4f}
+
+Precision:
+{results["precision"]:.4f}
+
+Recall:
+{results["recall"]:.4f}
+
+F1 Score:
+{results["f1"]:.4f}
+
+ROC-AUC:
+{results["roc_auc"]:.4f}
+
+Top features:
+{feature_info}
+
+Question:
+{question}
+
+Do not invent model results.
+Use only the provided project information.
+"""
+
+                with st.spinner("AI is thinking..."):
+
+                    response = client.responses.create(
+                        model="gpt-5.6-luna",
+                        input=prompt
+                    )
+
+                st.markdown("### 💬 AI Answer")
+
+                st.write(
+                    response.output_text
+                )
+
+            else:
+
+                st.warning(
+                    "Please enter a question."
+                )
 
 
 # =========================================================

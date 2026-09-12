@@ -150,7 +150,8 @@ activemq-data/
 *.sage.py
 
 # Environments
-myfirstproject/
+.myfirtproject/
+.streamlit/secrets.toml
 .env
 .envrc
 .venv
