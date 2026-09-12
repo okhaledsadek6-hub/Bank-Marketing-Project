@@ -78,6 +78,50 @@ header {
 }
 
 
+/* Sidebar Brand */
+
+.sidebar-brand {
+    padding: 20px 10px 10px 10px;
+}
+
+.brand-icon {
+    font-size: 32px;
+    margin-bottom: 5px;
+}
+
+.brand-title {
+    font-size: 25px;
+    font-weight: 800;
+    color: white;
+}
+
+.brand-subtitle {
+    font-size: 14px;
+    color: #b8c7d9;
+    margin-top: 5px;
+}
+
+.sidebar-nav-title {
+    font-size: 15px;
+    font-weight: 700;
+    color: #dbeafe;
+    margin: 10px 5px 8px 5px;
+}
+
+[data-testid="stSidebar"] hr {
+    border-color: #29415f;
+    margin: 10px 5px;
+}
+
+[data-testid="stSidebar"] [data-testid="stRadio"] label {
+    color: #dbeafe !important;
+    font-size: 15px;
+}
+
+[data-testid="stSidebar"] [data-testid="stRadio"] > div {
+    gap: 8px;
+}
+
 /* =========================================
    MAIN TITLE
    ========================================= */
@@ -293,29 +337,39 @@ with st.sidebar:
 
     st.markdown(
         """
-        <div style="
-            text-align:center;
-            padding:10px;
-            font-size:25px;
-            font-weight:bold;
-        ">
-        🏦 BankPredict
+        <div class="sidebar-brand">
+            <div class="brand-icon">🏦</div>
+            <div class="brand-title">BankPredict</div>
+            <div class="brand-subtitle">
+                Bank Marketing Analytics
+            </div>
         </div>
         """,
         unsafe_allow_html=True
     )
 
     st.markdown(
-        """
-        <div style="
-            text-align:center;
-            color:#94a3b8;
-            margin-bottom:25px;
-        ">
-        Bank Marketing Analytics
-        </div>
-        """,
+        "<hr>",
         unsafe_allow_html=True
+    )
+
+    st.markdown(
+        '<div class="sidebar-nav-title">Navigation</div>',
+        unsafe_allow_html=True
+    )
+
+    page = st.radio(
+        "Navigation",
+        [
+            "🏠 Overview",
+            "🔮 Make Prediction",
+            "🤖 AI Assistant",
+            "📊 Data Analysis",
+            "🤖 Model Performance",
+            "⭐ Feature Importance",
+            "ℹ️ About Project"
+        ],
+        label_visibility="collapsed"
     )
 
 
