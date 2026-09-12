@@ -3,3 +3,4 @@ pandas
 numpy
 scikit-learn
 joblib
+import matplotlib.pyplot as plt
