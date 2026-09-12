@@ -3,6 +3,7 @@ import pandas as pd
 import numpy as np
 import joblib
 import matplotlib.pyplot as plt
+import os
 
 
 # =========================================================
@@ -249,23 +250,22 @@ hr {
 # LOAD FILES
 # =========================================================
 
+BASE_DIR = os.path.dirname(os.path.abspath(file))
+
 @st.cache_resource
 def load_model():
-
-    return joblib.load("bank_model.pkl")
+    return joblib.load(os.path.join(BASE_DIR, "bank_model.pkl"))
 
 
 @st.cache_resource
 def load_results():
-
-    return joblib.load("bank_results.pkl")
+    return joblib.load(os.path.join(BASE_DIR, "bank_results.pkl"))
 
 
 @st.cache_data
 def load_data():
-
     return pd.read_csv(
-        "bank-additional-full.csv",
+        os.path.join(BASE_DIR, "bank-additional-full.csv"),
         sep=";"
     )
 
@@ -273,7 +273,6 @@ def load_data():
 model = load_model()
 results = load_results()
 df = load_data()
-
 
 # =========================================================
 # SIDEBAR
