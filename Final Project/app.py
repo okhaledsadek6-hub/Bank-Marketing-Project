@@ -252,7 +252,10 @@ hr {
 # LOAD FILES
 # =========================================================
 
+<<<<<<< HEAD
 
+=======
+>>>>>>> fc2746c227e6822e87839b1e91c03df77829088f
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 
 @st.cache_resource
