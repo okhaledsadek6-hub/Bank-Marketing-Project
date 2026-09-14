@@ -386,7 +386,6 @@ with st.sidebar:
         label_visibility="collapsed"
     )
 
-=======
         """
         <div style="
             text-align:center;
