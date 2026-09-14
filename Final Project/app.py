@@ -78,7 +78,10 @@ header {
 }
 
 
+<<<<<<< HEAD
 
+=======
+>>>>>>> 7d9bd05 (update Final Project with changes)
 /* Sidebar Brand */
 
 .sidebar-brand {
@@ -123,8 +126,6 @@ header {
     gap: 8px;
 }
 
-=======
->>>>>>> cdbe6d8 (update Final Project with changes)
 /* =========================================
    MAIN TITLE
    ========================================= */
@@ -299,6 +300,10 @@ hr {
 # LOAD FILES
 # =========================================================
 
+<<<<<<< HEAD
+=======
+
+>>>>>>> 7d9bd05 (update Final Project with changes)
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 
 @st.cache_resource
@@ -340,6 +345,10 @@ with st.sidebar:
 
     st.markdown(
         """
+<<<<<<< HEAD
+=======
+        <div class="sidebar-brand">
+>>>>>>> 7d9bd05 (update Final Project with changes)
             </div>
         <div style="
             text-align:center;
@@ -348,14 +357,20 @@ with st.sidebar:
             font-weight:bold;
         ">
         🏦 BankPrediction
+<<<<<<< HEAD
 
+=======
+>>>>>>> 7d9bd05 (update Final Project with changes)
         </div>
         """,
         unsafe_allow_html=True
     )
 
     st.markdown(
+<<<<<<< HEAD
 
+=======
+>>>>>>> 7d9bd05 (update Final Project with changes)
         "<hr>",
         unsafe_allow_html=True
     )
@@ -378,6 +393,7 @@ with st.sidebar:
         ],
         label_visibility="collapsed"
     )
+<<<<<<< HEAD
 st.markdown("""<div style="
             text-align:center;
             color:#94a3b8;
@@ -388,6 +404,24 @@ st.markdown("""<div style="
         """,
         unsafe_allow_html=True
     )
+=======
+
+    st.markdown(
+    """
+    <div style="
+        font-size: 42px;
+        font-weight: 800;
+        color: #1e293b;
+        margin-bottom: 5px;
+    ">
+    Bank Marketing Analytics
+    </div>
+    """,
+    unsafe_allow_html=True
+)
+
+
+>>>>>>> 7d9bd05 (update Final Project with changes)
 def generate_prediction_explanation(
     prediction,
     probability,
@@ -437,8 +471,11 @@ Do not claim that the prediction is guaranteed.
     )
 
     return response.output_text
-
 st.markdown("---")
+<<<<<<< HEAD
+=======
+
+>>>>>>> 7d9bd05 (update Final Project with changes)
 st.caption(
         "Machine Learning Project"
     )
@@ -599,6 +636,11 @@ if page == "🏠 Overview":
             "F1 Score",
             f"{results['f1']:.4f}"
         )
+<<<<<<< HEAD
+=======
+
+
+>>>>>>> 7d9bd05 (update Final Project with changes)
 # =========================================================
 # MAKE PREDICTION
 # =========================================================
@@ -1053,41 +1095,41 @@ Use only the provided project information.
 
 elif page == "📊 Data Analysis":
 
-    st.markdown(
+ st.markdown(
         '<div class="main-title">'
         'Data Analysis'
         '</div>',
         unsafe_allow_html=True
     )
 
-    st.markdown(
+st.markdown(
         '<div class="subtitle">'
         'Exploratory analysis of the Bank Marketing dataset.'
         '</div>',
         unsafe_allow_html=True
     )
 
-    st.subheader(
+st.subheader(
         "Dataset Overview"
     )
 
-    col1, col2, col3, col4 = st.columns(4)
+col1, col2, col3, col4 = st.columns(4)
 
-    with col1:
+with col1:
 
         st.metric(
             "Rows",
             f"{df.shape[0]:,}"
         )
 
-    with col2:
+with col2:
 
         st.metric(
             "Input Features",
             df.shape[1] - 1
         )
 
-    with col3:
+with col3:
 
         numerical = len(
             df.select_dtypes(
@@ -1100,7 +1142,7 @@ elif page == "📊 Data Analysis":
             numerical
         )
 
-    with col4:
+with col4:
 
         categorical = len(
             df.select_dtypes(
@@ -1113,11 +1155,11 @@ elif page == "📊 Data Analysis":
             categorical
         )
 
-    st.divider()
+st.divider()
 
-    col1, col2 = st.columns(2)
+col1, col2 = st.columns(2)
 
-    with col1:
+with col1:
 
         st.subheader(
             "Subscription Distribution"
@@ -1127,7 +1169,7 @@ elif page == "📊 Data Analysis":
             df["y"].value_counts()
         )
 
-    with col2:
+with col2:
 
         st.subheader(
             "Age Distribution"
@@ -1137,28 +1179,28 @@ elif page == "📊 Data Analysis":
             df["age"].value_counts().sort_index()
         )
 
-    st.divider()
+st.divider()
 
-    st.subheader(
+st.subheader(
         "Subscription by Job"
     )
 
-    job_data = pd.crosstab(
+job_data = pd.crosstab(
         df["job"],
         df["y"]
     )
 
-    st.bar_chart(
+st.bar_chart(
         job_data
     )
 
-    st.divider()
+st.divider()
 
-    st.subheader(
+st.subheader(
         "Dataset Sample"
     )
 
-    st.dataframe(
+st.dataframe(
         df.head(20),
         use_container_width=True,
         hide_index=True
@@ -1170,15 +1212,14 @@ elif page == "📊 Data Analysis":
 # =========================================================
 
 elif page == "🤖 Model Performance":
-
-    st.markdown(
+st.markdown(
         '<div class="main-title">'
         'Model Performance'
         '</div>',
         unsafe_allow_html=True
     )
 
-    st.markdown(
+st.markdown(
         '<div class="subtitle">'
         'Results directly loaded from the machine learning notebook.'
         '</div>',
@@ -1189,45 +1230,56 @@ elif page == "🤖 Model Performance":
     # METRICS FROM NOTEBOOK
     # ---------------------------------------------
 
-    col1, col2, col3, col4, col5 = st.columns(5)
+col1, col2, col3, col4, col5 = st.columns(5)
 
-    with col1:
+with col1:
 
         st.metric(
             "Accuracy",
             f"{results['accuracy']:.4f}"
         )
 
-    with col2:
+with col2:
 
         st.metric(
             "Precision",
             f"{results['precision']:.4f}"
         )
 
-    with col3:
+with col3:
 
         st.metric(
             "Recall",
             f"{results['recall']:.4f}"
         )
 
-    with col4:
+with col4:
 
         st.metric(
             "F1 Score",
             f"{results['f1']:.4f}"
         )
 
+<<<<<<< HEAD
     st.divider()
+=======
+with col5:
+
+        st.metric(
+            "ROC-AUC",
+            f"{results['roc_auc']:.4f}"
+        )
+
+st.divider()
+>>>>>>> 7d9bd05 (update Final Project with changes)
 
     # ---------------------------------------------
     # CONFUSION MATRIX
     # ---------------------------------------------
 
-    col1, col2 = st.columns(2)
+col1, col2 = st.columns(2)
 
-    with col1:
+with col1:
 
         st.subheader(
             "Confusion Matrix"
@@ -1286,21 +1338,21 @@ elif page == "🤖 Model Performance":
 
 elif page == "⭐ Feature Importance":
 
-    st.markdown(
+st.markdown(
         '<div class="main-title">'
         'Feature Importance'
         '</div>',
         unsafe_allow_html=True
     )
 
-    st.markdown(
+st.markdown(
         '<div class="subtitle">'
         'Feature importance directly loaded from the notebook.'
         '</div>',
         unsafe_allow_html=True
     )
 
-    importance_df = results[
+importance_df = results[
         "feature_importance"
     ].copy()
 
@@ -1308,7 +1360,7 @@ elif page == "⭐ Feature Importance":
     # TOP 15
     # ---------------------------------------------
 
-    top_features = (
+top_features = (
         importance_df
         .head(15)
         .sort_values(
@@ -1316,50 +1368,58 @@ elif page == "⭐ Feature Importance":
         )
     )
 
-    st.subheader(
+st.subheader(
         "Top 15 Important Features"
     )
 
-    chart_data = (
+chart_data = (
         top_features[
             ["Feature", "Importance"]
         ]
         .set_index("Feature")
     )
 
-    st.bar_chart(
+st.bar_chart(
         chart_data
     )
 
-    st.divider()
+st.divider()
 
-    st.subheader(
+st.subheader(
         "Feature Importance Details"
     )
 
-    display_df = (
+display_df = (
         importance_df
         .head(15)
         .copy()
     )
 
-    display_df["Importance"] = (
+display_df["Importance"] = (
         display_df["Importance"]
         .round(4)
     )
 
+<<<<<<< HEAD
     display_df["Coefficient"] = (
+=======
+display_df["Coefficient"] = (
+>>>>>>> 7d9bd05 (update Final Project with changes)
         display_df["Coefficient"]
         .round(4)
     )
 
+<<<<<<< HEAD
     st.dataframe(
+=======
+st.dataframe(
+>>>>>>> 7d9bd05 (update Final Project with changes)
         display_df,
         use_container_width=True,
         hide_index=True
     )
 
-    st.info(
+st.info(
         "The feature importance values shown here "
         "are the same values calculated by the "
         "Logistic Regression model in the notebook."
@@ -1372,29 +1432,29 @@ elif page == "⭐ Feature Importance":
 
 elif page == "ℹ️ About Project":
 
-    st.markdown(
+st.markdown(
         '<div class="main-title">'
         'About the Project'
         '</div>',
         unsafe_allow_html=True
     )
 
-    st.markdown(
+st.markdown(
         '<div class="subtitle">'
         'Bank Marketing Classification System'
         '</div>',
         unsafe_allow_html=True
     )
 
-    st.divider()
+st.divider()
 
     # ---------------------------------------------
     # PROJECT INFORMATION
     # ---------------------------------------------
 
-    col1, col2 = st.columns(2)
+col1, col2 = st.columns(2)
 
-    with col1:
+with col1:
 
         st.subheader(
             "🎯 Problem Definition"
@@ -1424,7 +1484,7 @@ elif page == "ℹ️ About Project":
             "classification problem."
         )
 
-    with col2:
+with col2:
 
         st.subheader(
             "⚙️ Preprocessing"
@@ -1456,33 +1516,33 @@ elif page == "ℹ️ About Project":
             "Streamlit application."
         )
 
-    st.divider()
+st.divider()
 
     # ---------------------------------------------
     # PROJECT STATISTICS
     # ---------------------------------------------
 
-    st.subheader(
+st.subheader(
         "Project Statistics"
     )
 
-    col1, col2, col3, col4 = st.columns(4)
+col1, col2, col3, col4 = st.columns(4)
 
-    with col1:
+with col1:
 
         st.metric(
             "Dataset Records",
             f"{len(df):,}"
             )
 
-    with col2:
+with col2:
 
         st.metric(
             "Input Features",
             df.shape[1] - 1
         )
 
-    with col3:
+with col3:
 
         st.metric(
             "Model",
@@ -1490,19 +1550,19 @@ elif page == "ℹ️ About Project":
             Regression"
         )
 
-    with col4:
+with col4:
 
         st.metric(
             "Task",
             "Classification"
         )
 
-    st.divider()
+st.divider()
 
-    st.success(
+st.success(
         "Bank Marketing Machine Learning Project"
     )
 
-    st.caption(
+st.caption(
         "Educational and demonstration application"
     )
