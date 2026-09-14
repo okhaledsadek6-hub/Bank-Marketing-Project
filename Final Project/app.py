@@ -997,7 +997,7 @@ elif page == "🤖 AI Assistant":
 
         if st.button("Ask AI"):
 
-            if question.strip():
+              if question.strip():
 
                 feature_info = (
                     results["feature_importance"]
@@ -1049,7 +1049,7 @@ Use only the provided project information.
                     response.output_text
                 )
 
-                else:
+                 else:
                     st.warning(
                         "Please enter a question."
                     )
