@@ -78,7 +78,7 @@ header {
 }
 
 
-<<<<<<< HEAD
+
 /* Sidebar Brand */
 
 .sidebar-brand {
@@ -299,10 +299,6 @@ hr {
 # LOAD FILES
 # =========================================================
 
-<<<<<<< HEAD
-=======
-
->>>>>>> cdbe6d8 (update Final Project with changes)
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 
 @st.cache_resource
@@ -344,7 +340,7 @@ with st.sidebar:
 
     st.markdown(
         """
-<<<<<<< HEAD
+
         <div class="sidebar-brand">
             <div class="brand-icon">🏦</div>
             <div class="brand-title">BankPredict</div>
@@ -359,14 +355,14 @@ with st.sidebar:
             font-weight:bold;
         ">
         🏦 BankPredict
->>>>>>> cdbe6d8 (update Final Project with changes)
+
         </div>
         """,
         unsafe_allow_html=True
     )
 
     st.markdown(
-<<<<<<< HEAD
+
         "<hr>",
         unsafe_allow_html=True
     )
@@ -403,7 +399,6 @@ with st.sidebar:
         unsafe_allow_html=True
     )
 
->>>>>>> cdbe6d8 (update Final Project with changes)
 
 def generate_prediction_explanation(
     prediction,
@@ -456,7 +451,7 @@ Do not claim that the prediction is guaranteed.
     return response.output_text
 
 st.markdown("---")
-<<<<<<< HEAD
+
 =======
 page = st.radio(
         "Navigation",
@@ -472,7 +467,7 @@ page = st.radio(
     )
 
 st.markdown("---")
->>>>>>> cdbe6d8 (update Final Project with changes)
+
 
 st.caption(
         "Machine Learning Project"
@@ -635,7 +630,7 @@ if page == "🏠 Overview":
             f"{results['f1']:.4f}"
         )
 
-<<<<<<< HEAD
+
 =======
     with col5:
 
@@ -645,7 +640,7 @@ if page == "🏠 Overview":
         )
 
 
->>>>>>> cdbe6d8 (update Final Project with changes)
+
 # =========================================================
 # MAKE PREDICTION
 # =========================================================
@@ -1274,7 +1269,7 @@ elif page == "🤖 Model Performance":
             f"{results['roc_auc']:.4f}"
         )
 =======
->>>>>>> cdbe6d8 (update Final Project with changes)
+
 
     st.divider()
 
@@ -1337,59 +1332,6 @@ elif page == "🤖 Model Performance":
 
         st.pyplot(fig)
 
-<<<<<<< HEAD
-    # ---------------------------------------------
-    # ROC CURVE
-    # ---------------------------------------------
-
-    with col2:
-
-        st.subheader(
-            "ROC Curve"
-        )
-
-        fpr = results["fpr"]
-        tpr = results["tpr"]
-
-        fig, ax = plt.subplots(
-            figsize=(5, 4)
-        )
-
-        ax.plot(
-            fpr,
-            tpr,
-            label=(
-                f"ROC-AUC = "
-                f"{results['roc_auc']:.4f}"
-            )
-        )
-
-        ax.plot(
-            [0, 1],
-            [0, 1],
-            linestyle="--",
-            label="Baseline"
-        )
-
-        ax.set_xlabel(
-            "False Positive Rate"
-        )
-
-        ax.set_ylabel(
-            "True Positive Rate"
-        )
-
-        ax.set_title(
-            "ROC Curve"
-        )
-
-        ax.legend()
-
-        st.pyplot(fig)
-
-
-=======
->>>>>>> cdbe6d8 (update Final Project with changes)
 # =========================================================
 # FEATURE IMPORTANCE
 # =========================================================
@@ -1458,14 +1400,12 @@ elif page == "⭐ Feature Importance":
         .round(4)
     )
 
-<<<<<<< HEAD
     display_df["Coefficient"] = (
         display_df["Coefficient"]
         .round(4)
     )
 
 =======
->>>>>>> cdbe6d8 (update Final Project with changes)
     st.dataframe(
         display_df,
         use_container_width=True,
