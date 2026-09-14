@@ -385,7 +385,7 @@ with st.sidebar:
         ],
         label_visibility="collapsed"
     )
-
+         """
         <div style="
             text-align:center;
             color:#94a3b8;
