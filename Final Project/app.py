@@ -1242,16 +1242,6 @@ elif page == "🤖 Model Performance":
             f"{results['f1']:.4f}"
         )
 
-<<<<<<< HEAD
-    with col5:
-
-        st.metric(
-            "ROC-AUC",
-            f"{results['roc_auc']:.4f}"
-        )
-=======
-
-
     st.divider()
 
     # ---------------------------------------------
@@ -1386,7 +1376,6 @@ elif page == "⭐ Feature Importance":
         .round(4)
     )
 
-=======
     st.dataframe(
         display_df,
         use_container_width=True,
