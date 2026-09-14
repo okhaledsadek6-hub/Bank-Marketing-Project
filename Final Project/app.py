@@ -446,22 +446,6 @@ Do not claim that the prediction is guaranteed.
     return response.output_text
 
 st.markdown("---")
-page = st.radio(
-        "Navigation",
-        [
-            "🏠 Overview",
-            "🔮 Make Prediction",
-            "🤖 AI Assistant",
-            "📊 Data Analysis",
-            "🤖 Model Performance",
-            "⭐ Feature Importance",
-            "ℹ️ About Project"
-        ]
-    )
-
-st.markdown("---")
-
-
 st.caption(
         "Machine Learning Project"
     )
