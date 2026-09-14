@@ -347,14 +347,13 @@ with st.sidebar:
             <div class="brand-subtitle">
                 Bank Marketing Analytics
             </div>
-=======
         <div style="
             text-align:center;
             padding:10px;
             font-size:25px;
             font-weight:bold;
         ">
-        🏦 BankPredict
+        🏦 BankPrediction
 
         </div>
         """,
