@@ -446,8 +446,6 @@ Do not claim that the prediction is guaranteed.
     return response.output_text
 
 st.markdown("---")
-
-=======
 page = st.radio(
         "Navigation",
         [
