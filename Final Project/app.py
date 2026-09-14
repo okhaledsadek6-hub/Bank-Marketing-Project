@@ -1077,23 +1077,23 @@ st.subheader(
             "Dataset Overview"
         )
     
-    col1, col2, col3, col4 = st.columns(4)
+col1, col2, col3, col4 = st.columns(4)
     
-    with col1:
+with col1:
     
             st.metric(
                 "Rows",
                 f"{df.shape[0]:,}"
             )
     
-    with col2:
+with col2:
     
             st.metric(
                 "Input Features",
                 df.shape[1] - 1
             )
     
-    with col3:
+with col3:
     
             numerical = len(
                 df.select_dtypes(
@@ -1106,7 +1106,7 @@ st.subheader(
                 numerical
             )
     
-    with col4:
+with col4:
     
             categorical = len(
                 df.select_dtypes(
@@ -1119,11 +1119,11 @@ st.subheader(
                 categorical
             )
     
-    st.divider()
+st.divider()
     
-    col1, col2 = st.columns(2)
+col1, col2 = st.columns(2)
     
-    with col1:
+with col1:
     
             st.subheader(
                 "Subscription Distribution"
@@ -1133,7 +1133,7 @@ st.subheader(
                 df["y"].value_counts()
             )
     
-    with col2:
+with col2:
     
             st.subheader(
                 "Age Distribution"
@@ -1143,9 +1143,9 @@ st.subheader(
                 df["age"].value_counts().sort_index()
             )
     
-    st.divider()
+st.divider()
     
-    st.subheader(
+st.subheader(
             "Subscription by Job"
         )
     
@@ -1154,17 +1154,17 @@ st.subheader(
             df["y"]
         )
     
-    st.bar_chart(
+st.bar_chart(
             job_data
         )
     
-    st.divider()
+st.divider()
     
-    st.subheader(
+st.subheader(
             "Dataset Sample"
         )
     
-    st.dataframe(
+st.dataframe(
             df.head(20),
             use_container_width=True,
             hide_index=True
