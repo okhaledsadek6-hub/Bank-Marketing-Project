@@ -1066,14 +1066,14 @@ elif page == "📊 Data Analysis":
             unsafe_allow_html=True
         )
     
-    st.markdown(
+st.markdown(
             '<div class="subtitle">'
             'Exploratory analysis of the Bank Marketing dataset.'
             '</div>',
             unsafe_allow_html=True
         )
     
-    st.subheader(
+st.subheader(
             "Dataset Overview"
         )
     
