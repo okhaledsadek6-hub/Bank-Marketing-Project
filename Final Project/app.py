@@ -78,6 +78,7 @@ header {
 }
 
 
+<<<<<<< HEAD
 /* Sidebar Brand */
 
 .sidebar-brand {
@@ -122,6 +123,8 @@ header {
     gap: 8px;
 }
 
+=======
+>>>>>>> cdbe6d8 (update Final Project with changes)
 /* =========================================
    MAIN TITLE
    ========================================= */
@@ -296,6 +299,10 @@ hr {
 # LOAD FILES
 # =========================================================
 
+<<<<<<< HEAD
+=======
+
+>>>>>>> cdbe6d8 (update Final Project with changes)
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 
 @st.cache_resource
@@ -337,18 +344,29 @@ with st.sidebar:
 
     st.markdown(
         """
+<<<<<<< HEAD
         <div class="sidebar-brand">
             <div class="brand-icon">🏦</div>
             <div class="brand-title">BankPredict</div>
             <div class="brand-subtitle">
                 Bank Marketing Analytics
             </div>
+=======
+        <div style="
+            text-align:center;
+            padding:10px;
+            font-size:25px;
+            font-weight:bold;
+        ">
+        🏦 BankPredict
+>>>>>>> cdbe6d8 (update Final Project with changes)
         </div>
         """,
         unsafe_allow_html=True
     )
 
     st.markdown(
+<<<<<<< HEAD
         "<hr>",
         unsafe_allow_html=True
     )
@@ -372,6 +390,20 @@ with st.sidebar:
         label_visibility="collapsed"
     )
 
+=======
+        """
+        <div style="
+            text-align:center;
+            color:#94a3b8;
+            margin-bottom:25px;
+        ">
+        Bank Marketing Analytics
+        </div>
+        """,
+        unsafe_allow_html=True
+    )
+
+>>>>>>> cdbe6d8 (update Final Project with changes)
 
 def generate_prediction_explanation(
     prediction,
@@ -424,6 +456,23 @@ Do not claim that the prediction is guaranteed.
     return response.output_text
 
 st.markdown("---")
+<<<<<<< HEAD
+=======
+page = st.radio(
+        "Navigation",
+        [
+            "🏠 Overview",
+            "🔮 Make Prediction",
+            "🤖 AI Assistant",
+            "📊 Data Analysis",
+            "🤖 Model Performance",
+            "⭐ Feature Importance",
+            "ℹ️ About Project"
+        ]
+    )
+
+st.markdown("---")
+>>>>>>> cdbe6d8 (update Final Project with changes)
 
 st.caption(
         "Machine Learning Project"
@@ -586,6 +635,17 @@ if page == "🏠 Overview":
             f"{results['f1']:.4f}"
         )
 
+<<<<<<< HEAD
+=======
+    with col5:
+
+        st.metric(
+            "ROC-AUC",
+            f"{results['roc_auc']:.4f}"
+        )
+
+
+>>>>>>> cdbe6d8 (update Final Project with changes)
 # =========================================================
 # MAKE PREDICTION
 # =========================================================
@@ -1206,12 +1266,15 @@ elif page == "🤖 Model Performance":
             f"{results['f1']:.4f}"
         )
 
+<<<<<<< HEAD
     with col5:
 
         st.metric(
             "ROC-AUC",
             f"{results['roc_auc']:.4f}"
         )
+=======
+>>>>>>> cdbe6d8 (update Final Project with changes)
 
     st.divider()
 
@@ -1274,6 +1337,7 @@ elif page == "🤖 Model Performance":
 
         st.pyplot(fig)
 
+<<<<<<< HEAD
     # ---------------------------------------------
     # ROC CURVE
     # ---------------------------------------------
@@ -1324,6 +1388,8 @@ elif page == "🤖 Model Performance":
         st.pyplot(fig)
 
 
+=======
+>>>>>>> cdbe6d8 (update Final Project with changes)
 # =========================================================
 # FEATURE IMPORTANCE
 # =========================================================
@@ -1392,11 +1458,14 @@ elif page == "⭐ Feature Importance":
         .round(4)
     )
 
+<<<<<<< HEAD
     display_df["Coefficient"] = (
         display_df["Coefficient"]
         .round(4)
     )
 
+=======
+>>>>>>> cdbe6d8 (update Final Project with changes)
     st.dataframe(
         display_df,
         use_container_width=True,
