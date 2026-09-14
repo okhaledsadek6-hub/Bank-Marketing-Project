@@ -996,7 +996,6 @@ elif page == "🤖 AI Assistant":
         )
 
         if st.button("Ask AI"):
-
             if question.strip():
 
                 feature_info = (
@@ -1048,11 +1047,10 @@ Use only the provided project information.
                 st.write(
                     response.output_text
                 )
-
                 else:
-                    st.warning(
-                        "Please enter a question."
-                    )
+                        st.warning(
+                            "Please enter a question."
+                        )
 
 
 # =========================================================
