@@ -387,9 +387,7 @@ st.markdown("""<div style="
         unsafe_allow_html=True
     )
 
-    st.markdown(
-    """
-    <div style="
+    st.markdown("""<div style="
         font-size: 42px;
         font-weight: 800;
         color: #1e293b;
