@@ -1175,15 +1175,15 @@ st.dataframe(
 # MODEL PERFORMANCE
 # =========================================================
 
-elif page == "🤖 Model Performance":
-st.markdown(
+ elif page == "🤖 Model Performance":
+ st.markdown(
         '<div class="main-title">'
         'Model Performance'
         '</div>',
         unsafe_allow_html=True
     )
 
-st.markdown(
+ st.markdown(
         '<div class="subtitle">'
         'Results directly loaded from the machine learning notebook.'
         '</div>',
@@ -1194,30 +1194,30 @@ st.markdown(
     # METRICS FROM NOTEBOOK
     # ---------------------------------------------
 
-col1, col2, col3, col4, col5 = st.columns(5)
+ col1, col2, col3, col4, col5 = st.columns(5)
 
-with col1:
+ with col1:
 
         st.metric(
             "Accuracy",
             f"{results['accuracy']:.4f}"
         )
 
-with col2:
+ with col2:
 
         st.metric(
             "Precision",
             f"{results['precision']:.4f}"
         )
 
-with col3:
+ with col3:
 
         st.metric(
             "Recall",
             f"{results['recall']:.4f}"
         )
 
-with col4:
+ with col4:
 
         st.metric(
             "F1 Score",
@@ -1229,9 +1229,9 @@ with col4:
     # CONFUSION MATRIX
     # ---------------------------------------------
 
-col1, col2 = st.columns(2)
+ col1, col2 = st.columns(2)
 
-with col1:
+ with col1:
 
         st.subheader(
             "Confusion Matrix"
