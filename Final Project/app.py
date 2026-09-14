@@ -586,13 +586,6 @@ if page == "🏠 Overview":
             f"{results['f1']:.4f}"
         )
 
-    with col5:
-
-        st.metric(
-            "ROC-AUC",
-            f"{results['roc_auc']:.4f}"
-        )
-
 
 # =========================================================
 # MAKE PREDICTION
@@ -976,9 +969,7 @@ elif page == "🤖 AI Assistant":
         question = st.text_area(
             "Ask the AI Assistant",
             placeholder=(
-                "Example: What does ROC-AUC mean?\n"
-                "Why is Logistic Regression used?\n"
-                "Which features are most important?"
+                "Example: Which features are most important?"
             ),
             height=120
         )
@@ -1013,9 +1004,6 @@ Recall:
 
 F1 Score:
 {results["f1"]:.4f}
-
-ROC-AUC:
-{results["roc_auc"]:.4f}
 
 Top features:
 {feature_info}
