@@ -385,8 +385,7 @@ with st.sidebar:
         ],
         label_visibility="collapsed"
     )
-         """
-        <div style="
+        st.markdown("""<div style="<div style="
             text-align:center;
             color:#94a3b8;
             margin-bottom:25px;
