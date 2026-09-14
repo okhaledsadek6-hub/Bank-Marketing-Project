@@ -1149,7 +1149,7 @@ st.subheader(
             "Subscription by Job"
         )
     
-    job_data = pd.crosstab(
+job_data = pd.crosstab(
             df["job"],
             df["y"]
         )
