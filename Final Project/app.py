@@ -1057,7 +1057,7 @@ Use only the provided project information.
 # DATA ANALYSIS
 # =========================================================
 
-    elif page == "📊 Data Analysis":
+elif page == "📊 Data Analysis":
     
      st.markdown(
             '<div class="main-title">'
