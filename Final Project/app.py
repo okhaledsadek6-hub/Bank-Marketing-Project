@@ -385,7 +385,7 @@ with st.sidebar:
         ],
         label_visibility="collapsed"
     )
-        st.markdown("""<div style="
+st.markdown("""<div style="
             text-align:center;
             color:#94a3b8;
             margin-bottom:25px;
@@ -395,8 +395,6 @@ with st.sidebar:
         """,
         unsafe_allow_html=True
     )
-
-
 def generate_prediction_explanation(
     prediction,
     probability,
