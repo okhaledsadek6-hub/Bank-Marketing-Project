@@ -299,11 +299,6 @@ hr {
 # =========================================================
 # LOAD FILES
 # =========================================================
-
-<<<<<<< HEAD
-=======
-
->>>>>>> 7d9bd05 (update Final Project with changes)
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 
 @st.cache_resource
@@ -342,13 +337,9 @@ client = load_openai()
 # =========================================================
 
 with st.sidebar:
-
     st.markdown(
         """
-<<<<<<< HEAD
-=======
         <div class="sidebar-brand">
->>>>>>> 7d9bd05 (update Final Project with changes)
             </div>
         <div style="
             text-align:center;
@@ -357,20 +348,12 @@ with st.sidebar:
             font-weight:bold;
         ">
         🏦 BankPrediction
-<<<<<<< HEAD
-
-=======
->>>>>>> 7d9bd05 (update Final Project with changes)
         </div>
         """,
         unsafe_allow_html=True
     )
 
     st.markdown(
-<<<<<<< HEAD
-
-=======
->>>>>>> 7d9bd05 (update Final Project with changes)
         "<hr>",
         unsafe_allow_html=True
     )
@@ -393,7 +376,6 @@ with st.sidebar:
         ],
         label_visibility="collapsed"
     )
-<<<<<<< HEAD
 st.markdown("""<div style="
             text-align:center;
             color:#94a3b8;
@@ -404,7 +386,6 @@ st.markdown("""<div style="
         """,
         unsafe_allow_html=True
     )
-=======
 
     st.markdown(
     """
@@ -419,9 +400,6 @@ st.markdown("""<div style="
     """,
     unsafe_allow_html=True
 )
-
-
->>>>>>> 7d9bd05 (update Final Project with changes)
 def generate_prediction_explanation(
     prediction,
     probability,
@@ -472,10 +450,6 @@ Do not claim that the prediction is guaranteed.
 
     return response.output_text
 st.markdown("---")
-<<<<<<< HEAD
-=======
-
->>>>>>> 7d9bd05 (update Final Project with changes)
 st.caption(
         "Machine Learning Project"
     )
@@ -636,11 +610,6 @@ if page == "🏠 Overview":
             "F1 Score",
             f"{results['f1']:.4f}"
         )
-<<<<<<< HEAD
-=======
-
-
->>>>>>> 7d9bd05 (update Final Project with changes)
 # =========================================================
 # MAKE PREDICTION
 # =========================================================
@@ -1259,19 +1228,7 @@ with col4:
             "F1 Score",
             f"{results['f1']:.4f}"
         )
-
-<<<<<<< HEAD
     st.divider()
-=======
-with col5:
-
-        st.metric(
-            "ROC-AUC",
-            f"{results['roc_auc']:.4f}"
-        )
-
-st.divider()
->>>>>>> 7d9bd05 (update Final Project with changes)
 
     # ---------------------------------------------
     # CONFUSION MATRIX
@@ -1399,21 +1356,13 @@ display_df["Importance"] = (
         display_df["Importance"]
         .round(4)
     )
-
-<<<<<<< HEAD
     display_df["Coefficient"] = (
-=======
 display_df["Coefficient"] = (
->>>>>>> 7d9bd05 (update Final Project with changes)
         display_df["Coefficient"]
         .round(4)
     )
-
-<<<<<<< HEAD
     st.dataframe(
-=======
 st.dataframe(
->>>>>>> 7d9bd05 (update Final Project with changes)
         display_df,
         use_container_width=True,
         hide_index=True
