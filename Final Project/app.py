@@ -1049,11 +1049,11 @@ Use only the provided project information.
                     response.output_text
                 )
 
-            else:
-
-                st.warning(
-                    "Please enter a question."
-                )
+                else:
+    
+                    st.warning(
+                        "Please enter a question."
+                    )
 
 
 # =========================================================
