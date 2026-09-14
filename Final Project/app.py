@@ -1050,7 +1050,6 @@ Use only the provided project information.
                 )
 
                 else:
-    
                     st.warning(
                         "Please enter a question."
                     )
