@@ -340,12 +340,6 @@ with st.sidebar:
 
     st.markdown(
         """
-
-        <div class="sidebar-brand">
-            <div class="brand-icon">🏦</div>
-            <div class="brand-title">BankPredict</div>
-            <div class="brand-subtitle">
-                Bank Marketing Analytics
             </div>
         <div style="
             text-align:center;
