@@ -5,6 +5,7 @@ import joblib
 import matplotlib.pyplot as plt
 import os
 from google import genai
+from google.genai import types
 
 # =========================================================
 # PAGE SETTINGS
@@ -810,7 +811,7 @@ elif page == "🤖 AI Assistant":
     st.markdown(
         """
         <div class="subtitle">
-        Ask questions about the Bank Marketing prediction system,
+        Chat with the AI about the Bank Marketing prediction system,
         machine learning results, and marketing insights.
         </div>
         """,
@@ -820,25 +821,18 @@ elif page == "🤖 AI Assistant":
     if client is None:
         st.warning("Gemini API key is not configured.")
     else:
-        question = st.text_area(
-            "Ask the AI Assistant",
-            placeholder="Example: Which features are most important?",
-            height=120
+        feature_info = (
+            results["feature_importance"]
+            .head(10)
+            .to_string(index=False)
         )
 
-        if st.button("Ask AI"):
-            if question.strip():
-                feature_info = (
-                    results["feature_importance"]
-                    .head(10)
-                    .to_string(index=False)
-                )
-
-                prompt = f"""
+        system_instruction = f"""
 You are the AI assistant for a Bank Marketing
 Prediction Machine Learning project.
 
-Answer the question clearly and simply.
+Answer questions clearly and simply, and remember
+earlier turns in this conversation.
 
 Model:
 Random Forest
@@ -858,28 +852,58 @@ F1 Score:
 Top features:
 {feature_info}
 
-Question:
-{question}
-
 Do not invent model results.
 Use only the provided project information.
 """
 
+        # Create the chat session once per browser session, so it
+        # keeps the conversation history across reruns.
+        if "chat_session" not in st.session_state:
+            st.session_state["chat_session"] = client.chats.create(
+                model="gemini-3.6-flash",
+                config=types.GenerateContentConfig(
+                    system_instruction=system_instruction
+                )
+            )
+
+        if "chat_messages" not in st.session_state:
+            st.session_state["chat_messages"] = []
+
+        if st.button("🗑️ Clear Chat"):
+            del st.session_state["chat_session"]
+            st.session_state["chat_messages"] = []
+            st.rerun()
+
+        # Replay the conversation so far.
+        for message in st.session_state["chat_messages"]:
+            with st.chat_message(message["role"]):
+                st.write(message["content"])
+
+        question = st.chat_input("Ask the AI Assistant")
+
+        if question:
+            st.session_state["chat_messages"].append(
+                {"role": "user", "content": question}
+            )
+
+            with st.chat_message("user"):
+                st.write(question)
+
+            with st.chat_message("assistant"):
                 with st.spinner("AI is thinking..."):
                     try:
-                        response = client.models.generate_content(
-                            model="gemini-3.6-flash",
-                            contents=prompt
+                        response = st.session_state["chat_session"].send_message(
+                            question
                         )
                         answer = response.text
                     except Exception as e:
                         answer = f"AI Assistant failed: {e}"
 
-                st.markdown("### 💬 AI Answer")
-
                 st.write(answer)
-            else:
-                st.warning("Please enter a question.")
+
+            st.session_state["chat_messages"].append(
+                {"role": "assistant", "content": answer}
+            )
 
 
 # =========================================================
