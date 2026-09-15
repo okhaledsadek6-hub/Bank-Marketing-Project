@@ -1174,21 +1174,21 @@ Use only the provided project information.
 # =========================================================
 # MODEL PERFORMANCE
 # =========================================================
-elif page == "🤖 Model Performance":
-
-    st.markdown(
-            '<div class="main-title">'
-            'Model Performance'
-            '</div>',
-            unsafe_allow_html=True
-        )
+    elif page == "🤖 Model Performance":
     
-    st.markdown(
-            '<div class="subtitle">'
-            'Results directly loaded from the machine learning notebook.'
-            '</div>',
-            unsafe_allow_html=True
-        )
+        st.markdown(
+                '<div class="main-title">'
+                'Model Performance'
+                '</div>',
+                unsafe_allow_html=True
+            )
+        
+        st.markdown(
+                '<div class="subtitle">'
+                'Results directly loaded from the machine learning notebook.'
+                '</div>',
+                unsafe_allow_html=True
+            )
 
     # ---------------------------------------------
     # METRICS FROM NOTEBOOK
