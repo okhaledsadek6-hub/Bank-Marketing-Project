@@ -1,11 +1,10 @@
-from xmlrpc import client
 import streamlit as st
 import pandas as pd
 import numpy as np
 import joblib
 import matplotlib.pyplot as plt
 import os
-from openai import OpenAI
+from google import genai
 
 # =========================================================
 # PAGE SETTINGS
@@ -315,19 +314,19 @@ def load_data():
 
 
 @st.cache_resource
-def load_openai():
-    if "OPENAI_API_KEY" not in st.secrets:
+def load_gemini():
+    if "GEMINI_API_KEY" not in st.secrets:
         return None
 
-    return OpenAI(
-        api_key=st.secrets["OPENAI_API_KEY"]
+    return genai.Client(
+        api_key=st.secrets["GEMINI_API_KEY"]
     )
 
 
 model = load_model()
 results = load_results()
 df = load_data()
-client = load_openai()
+client = load_gemini()
 
 # =========================================================
 # SIDEBAR
@@ -407,7 +406,7 @@ def generate_prediction_explanation(
     feature_importance
 ):
     if client is None:
-        return "OpenAI API key is not configured."
+        return "Gemini API key is not configured."
 
     important_features = feature_importance.head(10).to_string(
         index=False
@@ -444,14 +443,14 @@ Do not claim that the prediction is guaranteed.
 """
 
     try:
-        response = client.responses.create(
-            model="gpt-4o-mini",
-            input=prompt
+        response = client.models.generate_content(
+            model="gemini-2.5-flash",
+            contents=prompt
         )
     except Exception as e:
         return f"AI explanation failed: {e}"
 
-    return response.output_text
+    return response.text
 
 
 st.markdown("---")
@@ -780,7 +779,7 @@ elif page == "🔮 Make Prediction":
         if client is None:
             st.info(
                 "AI explanation is unavailable because "
-                "the OpenAI API key has not been configured."
+                "the Gemini API key has not been configured."
             )
         else:
             if st.button("✨ Explain This Prediction with AI", use_container_width=True):
@@ -819,7 +818,7 @@ elif page == "🤖 AI Assistant":
     )
 
     if client is None:
-        st.warning("OpenAI API key is not configured.")
+        st.warning("Gemini API key is not configured.")
     else:
         question = st.text_area(
             "Ask the AI Assistant",
@@ -868,11 +867,11 @@ Use only the provided project information.
 
                 with st.spinner("AI is thinking..."):
                     try:
-                        response = client.responses.create(
-                            model="gpt-4o-mini",
-                            input=prompt
+                        response = client.models.generate_content(
+                            model="gemini-2.5-flash",
+                            contents=prompt
                         )
-                        answer = response.output_text
+                        answer = response.text
                     except Exception as e:
                         answer = f"AI Assistant failed: {e}"
 
