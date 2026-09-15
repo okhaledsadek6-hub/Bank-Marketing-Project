@@ -1154,8 +1154,8 @@ elif page == "ℹ️ About Project":
 
         st.write(
             "The model is evaluated using Accuracy, "
-            "Precision, Recall, F1 Score, Confusion "
-            "Matrix and ROC-AUC."
+            "Precision, Recall, F1 Score and Confusion "
+            "Matrix."
         )
 
         st.subheader("🚀 Deployment")
@@ -1183,7 +1183,8 @@ elif page == "ℹ️ About Project":
         st.metric("Input Features", df.shape[1] - 1)
 
     with col3:
-        st.metric("Model", "Random Forest")
+        st.metric("Model", "Random" 
+        "Forest")
 
     with col4:
         st.metric("Task", "Classification")
