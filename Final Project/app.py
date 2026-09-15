@@ -1174,16 +1174,15 @@ st.dataframe(
 # =========================================================
 # MODEL PERFORMANCE
 # =========================================================
-
-    elif page == "🤖 Model Performance":
-       st.markdown(
+elif page == "🤖 Model Performance":
+    st.markdown(
             '<div class="main-title">'
             'Model Performance'
             '</div>',
             unsafe_allow_html=True
         )
     
-     st.markdown(
+    st.markdown(
             '<div class="subtitle">'
             'Results directly loaded from the machine learning notebook.'
             '</div>',
