@@ -1176,7 +1176,7 @@ st.dataframe(
 # =========================================================
 
  elif page == "🤖 Model Performance":
- st.markdown(
+   st.markdown(
         '<div class="main-title">'
         'Model Performance'
         '</div>',
