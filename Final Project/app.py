@@ -444,7 +444,7 @@ Do not claim that the prediction is guaranteed.
 
     try:
         response = client.models.generate_content(
-            model="gemini-2.5-flash",
+            model="gemini-3.6-flash",
             contents=prompt
         )
     except Exception as e:
@@ -868,7 +868,7 @@ Use only the provided project information.
                 with st.spinner("AI is thinking..."):
                     try:
                         response = client.models.generate_content(
-                            model="gemini-2.5-flash",
+                            model="gemini-3.6-flash",
                             contents=prompt
                         )
                         answer = response.text
