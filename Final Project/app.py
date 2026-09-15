@@ -1093,103 +1093,112 @@ elif page == "⭐ Feature Importance":
 # =========================================================
 # ABOUT PROJECT
 # =========================================================
-
+ 
 elif page == "ℹ️ About Project":
-
+ 
     st.markdown(
         '<div class="main-title">'
         'About the Project'
         '</div>',
         unsafe_allow_html=True
     )
-
+ 
     st.markdown(
         '<div class="subtitle">'
         'Bank Marketing Classification System'
         '</div>',
         unsafe_allow_html=True
     )
-
+ 
+    st.markdown(
+        "📂 **Dataset source:** "
+        "[Bank Marketing Data Set on Kaggle]"
+        "(https://www.kaggle.com/datasets/tunguz/bank-marketing-data-set)"
+    )
+ 
     st.divider()
-
+ 
     # ---------------------------------------------
     # PROJECT INFORMATION
     # ---------------------------------------------
-
+ 
     col1, col2 = st.columns(2)
-
+ 
     with col1:
         st.subheader("🎯 Problem Definition")
-
+ 
         st.write(
             "The objective of this project is to predict "
             "whether a bank customer will subscribe to "
             "a term deposit after a marketing campaign."
         )
-
+ 
         st.subheader("🤖 Machine Learning Model")
-
+ 
         st.write(
             "Random Forest is used as the "
             "classification algorithm."
         )
-
+ 
         st.subheader("📚 Learning Type")
-
+ 
         st.write(
             "This is a supervised machine learning "
             "classification problem."
         )
-
+ 
     with col2:
         st.subheader("⚙️ Preprocessing")
-
+ 
         st.write(
             "Numerical features are standardized using "
             "StandardScaler. Categorical features are "
             "converted using OneHotEncoder."
         )
-
+ 
         st.subheader("📊 Evaluation Metrics")
-
+ 
         st.write(
             "The model is evaluated using Accuracy, "
             "Precision, Recall, F1 Score and Confusion "
             "Matrix."
         )
-
+ 
         st.subheader("🚀 Deployment")
-
+ 
         st.write(
             "The trained model and its results are saved "
             "using Joblib and displayed through a "
             "Streamlit application."
         )
-
+ 
     st.divider()
-
+ 
     # ---------------------------------------------
     # PROJECT STATISTICS
     # ---------------------------------------------
-
+ 
     st.subheader("Project Statistics")
-
+ 
     col1, col2, col3, col4 = st.columns(4)
-
+ 
     with col1:
         st.metric("Dataset Records", f"{len(df):,}")
-
+ 
     with col2:
         st.metric("Input Features", df.shape[1] - 1)
-
+ 
     with col3:
-        st.metric("Model", "Random" 
-        "Forest")
-
+        st.metric("Model", "RandomForest")
+ 
     with col4:
         st.metric("Task", "Classification")
-
+ 
     st.divider()
+ 
+    st.success("Bank Marketing Machine Learning Project")
+ 
+    st.caption("Educational and demonstration application")
 
     st.success("Bank Marketing Machine Learning Project")
 
