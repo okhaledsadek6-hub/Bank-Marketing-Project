@@ -835,17 +835,19 @@ Do not invent model results.
 Use only the provided project information.
 """
 
-                with st.spinner("AI is thinking..."):
-                    response = client.responses.create(
-                        model="gpt-5.6-luna",
-                        input=prompt
-                    )
+                               with st.spinner("AI is thinking..."):
+                    try:
+                        response = client.responses.create(
+                            model="gpt-4o-mini",
+                            input=prompt
+                        )
+                        answer = response.output_text
+                    except Exception as e:
+                        answer = f"AI Assistant failed: {e}"
 
                 st.markdown("### 💬 AI Answer")
 
-                st.write(response.output_text)
-            else:
-                st.warning("Please enter a question.")
+                st.write(answer)
 
 
 # =========================================================
