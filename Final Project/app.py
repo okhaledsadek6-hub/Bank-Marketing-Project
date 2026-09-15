@@ -374,6 +374,32 @@ with st.sidebar:
         label_visibility="collapsed"
     )
 
+st.markdown(
+    """<div style="
+        text-align:center;
+        color:#94a3b8;
+        margin-bottom:25px;
+    ">
+    Bank Marketing Analytics
+    </div>
+    """,
+    unsafe_allow_html=True
+)
+
+st.markdown(
+    """<div style="
+    font-size: 42px;
+    font-weight: 800;
+    color: #1e293b;
+    margin-bottom: 5px;
+">
+Bank Marketing Analytics
+</div>
+""",
+    unsafe_allow_html=True
+)
+
+
 def generate_prediction_explanation(
     prediction,
     probability,
@@ -417,10 +443,13 @@ Do not invent additional customer information.
 Do not claim that the prediction is guaranteed.
 """
 
-    response = client.responses.create(
-        model="gpt-5.6-luna",
-        input=prompt
-    )
+    try:
+        response = client.responses.create(
+            model="gpt-4o-mini",
+            input=prompt
+        )
+    except Exception as e:
+        return f"AI explanation failed: {e}"
 
     return response.output_text
 
@@ -686,9 +715,24 @@ elif page == "🔮 Make Prediction":
 
         probability_dict = dict(zip(model.classes_, probabilities))
 
-        yes_probability = probability_dict["yes"]
+        # Store the results in session_state so they survive the rerun
+        # triggered by clicking the AI explanation button below.
+        st.session_state["prediction"] = prediction
+        st.session_state["yes_probability"] = probability_dict["yes"]
+        st.session_state["no_probability"] = probability_dict["no"]
+        st.session_state["input_data"] = input_data
 
-        no_probability = probability_dict["no"]
+    # ---------------------------------------------
+    # PREDICTION RESULT (rendered from session_state so it
+    # persists across the AI-explanation button's rerun)
+    # ---------------------------------------------
+
+    if "prediction" in st.session_state:
+
+        prediction = st.session_state["prediction"]
+        yes_probability = st.session_state["yes_probability"]
+        no_probability = st.session_state["no_probability"]
+        input_data = st.session_state["input_data"]
 
         st.markdown(
             '<div class="section-title">'
@@ -725,45 +769,32 @@ elif page == "🔮 Make Prediction":
         # ---------------------------------------------
         # AI PREDICTION EXPLANATION
         # ---------------------------------------------
- 
-    if "prediction" in st.session_state:
- 
-        prediction = st.session_state["prediction"]
-        yes_probability = st.session_state["yes_probability"]
-        no_probability = st.session_state["no_probability"]
-        input_data = st.session_state["input_data"]
- 
+
         st.markdown(
             '<div class="section-title">'
-            '📋 Prediction Result'
+            '🤖 AI Prediction Explanation'
             '</div>',
             unsafe_allow_html=True
         )
- 
-        if prediction == "yes":
-            st.success(
-                "### ✅ Likely to Subscribe\n"
-                f"Subscription probability: "
-                f"{yes_probability * 100:.2f}%"
+
+        if client is None:
+            st.info(
+                "AI explanation is unavailable because "
+                "the OpenAI API key has not been configured."
             )
         else:
-            st.error(
-                "### ❌ Unlikely to Subscribe\n"
-                f"Subscription probability: "
-                f"{yes_probability * 100:.2f}%"
-            )
- 
-        col1, col2 = st.columns(2)
- 
-        with col1:
-            st.metric("Subscription Probability", f"{yes_probability * 100:.2f}%")
- 
-            st.progress(float(yes_probability))
- 
-        with col2:
-            st.metric("No Subscription Probability", f"{no_probability * 100:.2f}%")
- 
-            st.progress(float(no_probability))
+            if st.button("✨ Explain This Prediction with AI", use_container_width=True):
+                customer_data = input_data.iloc[0].to_dict()
+
+                with st.spinner("Generating AI explanation..."):
+                    explanation = generate_prediction_explanation(
+                        prediction,
+                        yes_probability,
+                        customer_data,
+                        results["feature_importance"]
+                    )
+
+                st.info(explanation)
 
 
 # =========================================================
@@ -848,6 +879,8 @@ Use only the provided project information.
                 st.markdown("### 💬 AI Answer")
 
                 st.write(answer)
+            else:
+                st.warning("Please enter a question.")
 
 
 # =========================================================
@@ -1046,6 +1079,8 @@ elif page == "⭐ Feature Importance":
     display_df = importance_df.head(15).copy()
 
     display_df["Importance"] = display_df["Importance"].round(4)
+
+    display_df["Coefficient"] = display_df["Coefficient"].round(4)
 
     st.dataframe(
         display_df,
