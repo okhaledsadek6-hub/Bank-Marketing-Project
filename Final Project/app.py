@@ -1047,7 +1047,7 @@ Use only the provided project information.
                 st.write(
                     response.output_text
                 )
-                else:
+            else:
                     st.warning(
                         "Please enter a question."
                     )
