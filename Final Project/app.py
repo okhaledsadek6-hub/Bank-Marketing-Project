@@ -835,7 +835,7 @@ Do not invent model results.
 Use only the provided project information.
 """
 
-                               with st.spinner("AI is thinking..."):
+                with st.spinner("AI is thinking..."):
                     try:
                         response = client.responses.create(
                             model="gpt-4o-mini",
