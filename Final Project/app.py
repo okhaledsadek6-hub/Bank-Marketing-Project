@@ -1035,22 +1035,22 @@ Do not invent model results.
 Use only the provided project information.
 """
 
-                with st.spinner("AI is thinking..."):
-
-                    response = client.responses.create(
-                        model="gpt-5.6-luna",
-                        input=prompt
+                    with st.spinner("AI is thinking..."):
+    
+                        response = client.responses.create(
+                            model="gpt-5.6-luna",
+                            input=prompt
+                        )
+    
+                    st.markdown("### 💬 AI Answer")
+    
+                    st.write(
+                        response.output_text
                     )
-
-                st.markdown("### 💬 AI Answer")
-
-                st.write(
-                    response.output_text
-                )
-            else:
-                    st.warning(
-                        "Please enter a question."
-                    )
+                else:
+                        st.warning(
+                            "Please enter a question."
+                        )
 
 
 # =========================================================
