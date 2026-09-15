@@ -1032,8 +1032,6 @@ elif page == "⭐ Feature Importance":
 
     display_df["Importance"] = display_df["Importance"].round(4)
 
-    display_df["Coefficient"] = display_df["Coefficient"].round(4)
-
     st.dataframe(
         display_df,
         use_container_width=True,
