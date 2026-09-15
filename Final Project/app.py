@@ -1057,124 +1057,124 @@ Use only the provided project information.
 # DATA ANALYSIS
 # =========================================================
 
-elif page == "📊 Data Analysis":
-    
-     st.markdown(
-            '<div class="main-title">'
-            'Data Analysis'
-            '</div>',
-            unsafe_allow_html=True
-        )
-    
-st.markdown(
-            '<div class="subtitle">'
-            'Exploratory analysis of the Bank Marketing dataset.'
-            '</div>',
-            unsafe_allow_html=True
-        )
-    
-st.subheader(
-            "Dataset Overview"
-        )
-    
-col1, col2, col3, col4 = st.columns(4)
-    
-with col1:
-    
-            st.metric(
-                "Rows",
-                f"{df.shape[0]:,}"
+    elif page == "📊 Data Analysis":
+        
+         st.markdown(
+                '<div class="main-title">'
+                'Data Analysis'
+                '</div>',
+                unsafe_allow_html=True
             )
-    
-with col2:
-    
-            st.metric(
-                "Input Features",
-                df.shape[1] - 1
+        
+    st.markdown(
+                '<div class="subtitle">'
+                'Exploratory analysis of the Bank Marketing dataset.'
+                '</div>',
+                unsafe_allow_html=True
             )
-    
-with col3:
-    
-            numerical = len(
-                df.select_dtypes(
-                    include=np.number
-                ).columns
+        
+    st.subheader(
+                "Dataset Overview"
             )
-    
-            st.metric(
-                "Numerical Features",
-                numerical
+        
+    col1, col2, col3, col4 = st.columns(4)
+        
+    with col1:
+        
+                st.metric(
+                    "Rows",
+                    f"{df.shape[0]:,}"
+                )
+        
+    with col2:
+        
+                st.metric(
+                    "Input Features",
+                    df.shape[1] - 1
+                )
+        
+    with col3:
+        
+                numerical = len(
+                    df.select_dtypes(
+                        include=np.number
+                    ).columns
+                )
+        
+                st.metric(
+                    "Numerical Features",
+                    numerical
+                )
+        
+    with col4:
+        
+                categorical = len(
+                    df.select_dtypes(
+                        include="object"
+                    ).columns
+                ) - 1
+        
+                st.metric(
+                    "Categorical Features",
+                    categorical
+                )
+        
+    st.divider()
+        
+    col1, col2 = st.columns(2)
+        
+    with col1:
+        
+                st.subheader(
+                    "Subscription Distribution"
+                )
+        
+                st.bar_chart(
+                    df["y"].value_counts()
+                )
+        
+    with col2:
+        
+                st.subheader(
+                    "Age Distribution"
+                )
+        
+                st.bar_chart(
+                    df["age"].value_counts().sort_index()
+                )
+        
+    st.divider()
+        
+    st.subheader(
+                "Subscription by Job"
             )
-    
-with col4:
-    
-            categorical = len(
-                df.select_dtypes(
-                    include="object"
-                ).columns
-            ) - 1
-    
-            st.metric(
-                "Categorical Features",
-                categorical
+        
+    job_data = pd.crosstab(
+                df["job"],
+                df["y"]
             )
-    
-st.divider()
-    
-col1, col2 = st.columns(2)
-    
-with col1:
-    
-            st.subheader(
-                "Subscription Distribution"
+        
+    st.bar_chart(
+                job_data
             )
-    
-            st.bar_chart(
-                df["y"].value_counts()
+        
+    st.divider()
+        
+    st.subheader(
+                "Dataset Sample"
             )
-    
-with col2:
-    
-            st.subheader(
-                "Age Distribution"
+        
+    st.dataframe(
+                df.head(20),
+                use_container_width=True,
+                hide_index=True
             )
-    
-            st.bar_chart(
-                df["age"].value_counts().sort_index()
-            )
-    
-st.divider()
-    
-st.subheader(
-            "Subscription by Job"
-        )
-    
-job_data = pd.crosstab(
-            df["job"],
-            df["y"]
-        )
-    
-st.bar_chart(
-            job_data
-        )
-    
-st.divider()
-    
-st.subheader(
-            "Dataset Sample"
-        )
-    
-st.dataframe(
-            df.head(20),
-            use_container_width=True,
-            hide_index=True
-        )
 
 
 # =========================================================
 # MODEL PERFORMANCE
 # =========================================================
-    elif page == "🤖 Model Performance":
+elif page == "🤖 Model Performance":
 
     st.markdown(
             '<div class="main-title">'
