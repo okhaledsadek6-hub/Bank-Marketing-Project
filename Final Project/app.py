@@ -1199,7 +1199,4 @@ elif page == "ℹ️ About Project":
     st.success("Bank Marketing Machine Learning Project")
  
     st.caption("Educational and demonstration application")
-
-    st.success("Bank Marketing Machine Learning Project")
-
-    st.caption("Educational and demonstration application")
+    
