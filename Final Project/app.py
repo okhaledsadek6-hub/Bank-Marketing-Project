@@ -725,32 +725,45 @@ elif page == "🔮 Make Prediction":
         # ---------------------------------------------
         # AI PREDICTION EXPLANATION
         # ---------------------------------------------
-
+ 
+    if "prediction" in st.session_state:
+ 
+        prediction = st.session_state["prediction"]
+        yes_probability = st.session_state["yes_probability"]
+        no_probability = st.session_state["no_probability"]
+        input_data = st.session_state["input_data"]
+ 
         st.markdown(
             '<div class="section-title">'
-            '🤖 AI Prediction Explanation'
+            '📋 Prediction Result'
             '</div>',
             unsafe_allow_html=True
         )
-
-        if client is None:
-            st.info(
-                "AI explanation is unavailable because "
-                "the OpenAI API key has not been configured."
+ 
+        if prediction == "yes":
+            st.success(
+                "### ✅ Likely to Subscribe\n"
+                f"Subscription probability: "
+                f"{yes_probability * 100:.2f}%"
             )
         else:
-            if st.button("✨ Explain This Prediction with AI", use_container_width=True):
-                customer_data = input_data.iloc[0].to_dict()
-
-                with st.spinner("Generating AI explanation..."):
-                    explanation = generate_prediction_explanation(
-                        prediction,
-                        yes_probability,
-                        customer_data,
-                        results["feature_importance"]
-                    )
-
-                st.info(explanation)
+            st.error(
+                "### ❌ Unlikely to Subscribe\n"
+                f"Subscription probability: "
+                f"{yes_probability * 100:.2f}%"
+            )
+ 
+        col1, col2 = st.columns(2)
+ 
+        with col1:
+            st.metric("Subscription Probability", f"{yes_probability * 100:.2f}%")
+ 
+            st.progress(float(yes_probability))
+ 
+        with col2:
+            st.metric("No Subscription Probability", f"{no_probability * 100:.2f}%")
+ 
+            st.progress(float(no_probability))
 
 
 # =========================================================
