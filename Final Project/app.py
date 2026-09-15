@@ -1,11 +1,11 @@
-from xmlrpc import client
-import streamlit as st
-import pandas as pd
-import numpy as np
-import joblib
-import matplotlib.pyplot as plt
-import os
-from openai import OpenAI
+    from xmlrpc import client
+    import streamlit as st
+    import pandas as pd
+    import numpy as np
+    import joblib
+    import matplotlib.pyplot as plt
+    import os
+    from openai import OpenAI
     
     # =========================================================
     # PAGE SETTINGS
@@ -76,11 +76,6 @@ from openai import OpenAI
         color: #dbeafe !important;
     }
     
-    
-    <<<<<<< HEAD
-    
-    =======
-    >>>>>>> 7d9bd05 (update Final Project with changes)
     /* Sidebar Brand */
     
     .sidebar-brand {
