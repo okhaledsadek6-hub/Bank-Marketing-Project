@@ -416,7 +416,7 @@ def generate_prediction_explanation(
     prompt = f"""
 You are an AI assistant inside a Bank Marketing Prediction System.
 
-The machine learning model is Logistic Regression.
+The machine learning model is Random Forest.
 You must NOT change or invent the model prediction.
 
 Explain the existing prediction clearly and simply.
@@ -824,7 +824,7 @@ Prediction Machine Learning project.
 Answer the question clearly and simply.
 
 Model:
-Logistic Regression
+Random Forest
 
 Accuracy:
 {results["accuracy"]:.4f}
@@ -1069,7 +1069,7 @@ elif page == "⭐ Feature Importance":
     st.info(
         "The feature importance values shown here "
         "are the same values calculated by the "
-        "Logistic Regression model in the notebook."
+        "Random Forest model in the notebook."
     )
 
 
@@ -1113,7 +1113,7 @@ elif page == "ℹ️ About Project":
         st.subheader("🤖 Machine Learning Model")
 
         st.write(
-            "Logistic Regression is used as the "
+            "Random Forest is used as the "
             "classification algorithm."
         )
 
@@ -1166,7 +1166,7 @@ elif page == "ℹ️ About Project":
         st.metric("Input Features", df.shape[1] - 1)
 
     with col3:
-        st.metric("Model", "Logistic Regression")
+        st.metric("Model", "Random Forest")
 
     with col4:
         st.metric("Task", "Classification")
