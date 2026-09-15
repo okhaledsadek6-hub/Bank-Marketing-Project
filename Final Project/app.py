@@ -374,32 +374,6 @@ with st.sidebar:
         label_visibility="collapsed"
     )
 
-st.markdown(
-    """<div style="
-        text-align:center;
-        color:#94a3b8;
-        margin-bottom:25px;
-    ">
-    Bank Marketing Analytics
-    </div>
-    """,
-    unsafe_allow_html=True
-)
-
-st.markdown(
-    """<div style="
-    font-size: 42px;
-    font-weight: 800;
-    color: #1e293b;
-    margin-bottom: 5px;
-">
-Bank Marketing Analytics
-</div>
-""",
-    unsafe_allow_html=True
-)
-
-
 def generate_prediction_explanation(
     prediction,
     probability,
