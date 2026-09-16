@@ -243,10 +243,23 @@ button[data-testid="stExpandSidebarButton"],
    ========================================= */
 
 .main-title {
-    font-size: 42px;
+    font-size: 44px;
     font-weight: 800;
-    color: #0b1f3a;
+    letter-spacing: -0.5px;
     margin-bottom: 5px;
+
+    /* Fallback color for browsers without gradient-text support */
+    color: #0b1f3a;
+
+    background: linear-gradient(
+        90deg,
+        #0b5ed7 0%,
+        #087f8c 50%,
+        #f2a900 100%
+    );
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
 }
 
 .subtitle {
