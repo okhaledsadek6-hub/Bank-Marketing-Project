@@ -917,6 +917,20 @@ elif page == "🤖 AI Assistant":
             .to_string(index=False)
         )
 
+        # If the user already ran a prediction on the Make Prediction
+        # page, include it here so the assistant can answer questions
+        # about "the prediction" / "this customer" too.
+        prediction_context = "The user has not run a prediction yet on the Make Prediction page."
+
+        if "prediction" in st.session_state:
+            customer_data = st.session_state["input_data"].iloc[0].to_dict()
+
+            prediction_context = f"""The user's most recent result from the Make Prediction page:
+
+Predicted outcome: {st.session_state['prediction']}
+Probability of subscribing: {st.session_state['yes_probability']:.2%}
+Customer details used for that prediction: {customer_data}"""
+
         system_instruction = f"""
 You are the AI assistant for a Bank Marketing
 Prediction Machine Learning project.
@@ -942,25 +956,35 @@ F1 Score:
 Top features:
 {feature_info}
 
-Do not invent model results.
+{prediction_context}
+
+Do not invent model results or customer data beyond what is given above.
 Use only the provided project information.
 """
 
         # Create the chat session once per browser session, so it
-        # keeps the conversation history across reruns.
-        if "chat_session" not in st.session_state:
+        # keeps the conversation history across reruns. If the
+        # context above changed (e.g. the user just ran a new
+        # prediction), recreate the session so the assistant picks
+        # up the new information.
+        if (
+            "chat_session" not in st.session_state
+            or st.session_state.get("chat_system_instruction") != system_instruction
+        ):
             st.session_state["chat_session"] = client.chats.create(
                 model="gemini-3.6-flash",
                 config=types.GenerateContentConfig(
                     system_instruction=system_instruction
                 )
             )
+            st.session_state["chat_system_instruction"] = system_instruction
 
         if "chat_messages" not in st.session_state:
             st.session_state["chat_messages"] = []
 
         if st.button("🗑️ Clear Chat"):
             del st.session_state["chat_session"]
+            del st.session_state["chat_system_instruction"]
             st.session_state["chat_messages"] = []
             st.rerun()
 
