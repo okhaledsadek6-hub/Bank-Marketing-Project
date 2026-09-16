@@ -48,10 +48,21 @@ footer {
     visibility: hidden;
 }
 
+/* The <header> itself has its own full-width background, which
+   becomes a visible white bar across the whole page now that
+   something inside it (the arrow) is visible again. Make the
+   header transparent so only the arrow shows, not a full strip. */
+header, [data-testid="stHeader"] {
+    background: transparent;
+}
+
 [data-testid="stExpandSidebarButton"],
 button[data-testid="stExpandSidebarButton"],
 [data-testid="collapsedControl"] {
     visibility: visible !important;
+    background-color: white !important;
+    border-radius: 8px !important;
+    box-shadow: 0 2px 6px rgba(11, 31, 58, 0.15) !important;
 }
 
 [data-testid="stDecoration"] {
