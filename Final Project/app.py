@@ -371,7 +371,7 @@ with st.sidebar:
             font-size:25px;
             font-weight:bold;
         ">
-        🏦 BankPrediction
+        🏦 Bank Marketing Prediction
         </div>
         """,
         unsafe_allow_html=True
