@@ -4,6 +4,7 @@ import numpy as np
 import joblib
 import matplotlib.pyplot as plt
 import os
+import time
 from google import genai
 from google.genai import types
 
@@ -17,304 +18,6 @@ st.set_page_config(
     layout="wide",
     initial_sidebar_state="expanded"
 )
-
-
-# =========================================================
-# CUSTOM CSS
-# =========================================================
-
-st.markdown("""
-<style>
-
-/* =========================================
-   GENERAL PAGE
-   ========================================= */
-
-#MainMenu {
-    visibility: hidden;
-}
-
-footer {
-    visibility: hidden;
-}
-
-/* Hide the Deploy button / toolbar - but the sidebar's re-expand
-   arrow (stExpandSidebarButton) actually lives INSIDE this same
-   toolbar element, so hiding the whole toolbar hides that arrow
-   too. Once the sidebar collapses, there's nothing left to click
-   to bring it back. Fix: hide the toolbar, then force the
-   re-expand button specifically back to visible. */
-[data-testid="stToolbar"] {
-    visibility: hidden;
-}
-
-/* The <header> itself has its own full-width background, which
-   becomes a visible white bar across the whole page now that
-   something inside it (the arrow) is visible again. Make the
-   header transparent so only the arrow shows, not a full strip. */
-header, [data-testid="stHeader"] {
-    background: transparent;
-}
-
-[data-testid="stExpandSidebarButton"],
-button[data-testid="stExpandSidebarButton"],
-[data-testid="collapsedControl"] {
-    visibility: visible !important;
-    background-color: white !important;
-    border-radius: 8px !important;
-    box-shadow: 0 2px 6px rgba(11, 31, 58, 0.15) !important;
-}
-
-[data-testid="stDecoration"] {
-    visibility: hidden;
-}
-
-.stApp {
-    background-color: #f4f7fb;
-}
-
-.block-container {
-    padding-top: 2rem;
-    padding-bottom: 2rem;
-}
-
-
-/* =========================================
-   SIDEBAR
-   ========================================= */
-
-[data-testid="stSidebar"] {
-    background: linear-gradient(
-        180deg,
-        #071426 0%,
-        #0b1f3a 55%,
-        #102b4c 100%
-    );
-}
-
-[data-testid="stSidebar"] * {
-    color: white;
-}
-
-
-/* Sidebar radio buttons */
-
-[data-testid="stSidebar"] .stRadio label {
-    color: #dbeafe !important;
-}
-
-/* Sidebar Brand */
-
-.sidebar-brand {
-    padding: 20px 10px 10px 10px;
-}
-
-.brand-icon {
-    font-size: 32px;
-    margin-bottom: 5px;
-}
-
-.brand-title {
-    font-size: 25px;
-    font-weight: 800;
-    color: white;
-}
-
-.brand-subtitle {
-    font-size: 14px;
-    color: #b8c7d9;
-    margin-top: 5px;
-}
-
-.sidebar-nav-title {
-    font-size: 15px;
-    font-weight: 700;
-    color: #dbeafe;
-    margin: 10px 5px 8px 5px;
-}
-
-[data-testid="stSidebar"] hr {
-    border-color: #29415f;
-    margin: 10px 5px;
-}
-
-[data-testid="stSidebar"] [data-testid="stRadio"] label {
-    color: #dbeafe !important;
-    font-size: 15px;
-}
-
-[data-testid="stSidebar"] [data-testid="stRadio"] > div {
-    gap: 8px;
-}
-
-/* =========================================
-   MAIN TITLE
-   ========================================= */
-
-.main-title {
-    font-size: 42px;
-    font-weight: 800;
-    color: #0b1f3a;
-    margin-bottom: 5px;
-}
-
-.subtitle {
-    font-size: 17px;
-    color: #64748b;
-    margin-bottom: 25px;
-}
-
-
-/* =========================================
-   SECTION TITLES
-   ========================================= */
-
-.section-title {
-    font-size: 25px;
-    font-weight: 700;
-    color: #0b1f3a;
-    margin-top: 20px;
-    margin-bottom: 15px;
-}
-
-
-/* =========================================
-   METRIC CARDS
-   ========================================= */
-
-[data-testid="stMetric"] {
-    background-color: white;
-    border: 1px solid #dbe5f0;
-    border-radius: 14px;
-    padding: 18px;
-    box-shadow: 0 3px 10px rgba(11, 31, 58, 0.08);
-}
-
-[data-testid="stMetricLabel"] {
-    color: #64748b !important;
-    font-weight: 600;
-}
-
-[data-testid="stMetricValue"] {
-    color: #0b1f3a !important;
-    font-weight: 800;
-}
-
-
-/* =========================================
-   BUTTONS
-   ========================================= */
-
-.stButton > button {
-    background: linear-gradient(
-        90deg,
-        #0b5ed7,
-        #087f8c
-    );
-
-    color: white;
-
-    border: none;
-
-    border-radius: 10px;
-
-    padding: 12px 20px;
-
-    font-size: 17px;
-
-    font-weight: 700;
-
-    box-shadow: 0 4px 10px rgba(11, 94, 215, 0.25);
-
-    transition: 0.2s;
-}
-
-.stButton > button:hover {
-    background: linear-gradient(
-        90deg,
-        #084298,
-        #05666f
-    );
-
-    color: white;
-
-    transform: translateY(-2px);
-
-    box-shadow: 0 6px 15px rgba(11, 94, 215, 0.35);
-}
-
-
-/* =========================================
-   INPUT BOXES
-   ========================================= */
-
-[data-baseweb="select"] > div {
-    border-radius: 8px;
-    border-color: #cbd5e1;
-}
-
-[data-testid="stNumberInput"] input {
-    border-radius: 8px;
-}
-
-
-/* =========================================
-   HEADERS
-   ========================================= */
-
-h1, h2, h3 {
-    color: #0b1f3a !important;
-}
-
-
-/* =========================================
-   SUCCESS MESSAGE
-   ========================================= */
-
-[data-testid="stAlert"] {
-    border-radius: 12px;
-}
-
-
-/* =========================================
-   DIVIDERS
-   ========================================= */
-
-hr {
-    border-color: #dbe5f0;
-}
-
-
-/* =========================================
-   DATAFRAME
-   ========================================= */
-
-[data-testid="stDataFrame"] {
-    border-radius: 12px;
-    overflow: hidden;
-}
-
-
-/* =========================================
-   INFO BOX
-   ========================================= */
-
-[data-testid="stAlert"][kind="info"] {
-    border-left: 5px solid #0b5ed7;
-}
-
-
-/* =========================================
-   FOOTER
-   ========================================= */
-
-.small-text {
-    color: #64748b;
-    font-size: 14px;
-}
-
-</style>
-""", unsafe_allow_html=True)
 
 
 # =========================================================
@@ -401,6 +104,384 @@ with st.sidebar:
         label_visibility="collapsed"
     )
 
+    st.markdown(
+        "<hr>",
+        unsafe_allow_html=True
+    )
+
+    # ---------------------------------------------
+    # LIGHT / DARK MODE TOGGLE
+    # ---------------------------------------------
+    # Streamlit's own built-in theme can't be switched at runtime
+    # from Python (only via config.toml, before the app starts),
+    # so this app implements its own light/dark mode by storing
+    # the choice in session_state and rebuilding the CSS below
+    # with a different color palette depending on the value.
+    if "dark_mode" not in st.session_state:
+        st.session_state["dark_mode"] = False
+
+    st.session_state["dark_mode"] = st.toggle(
+        "🌙 Dark Mode",
+        value=st.session_state["dark_mode"]
+    )
+
+dark_mode = st.session_state["dark_mode"]
+
+
+# =========================================================
+# CUSTOM CSS (built dynamically based on the theme above)
+# =========================================================
+
+if dark_mode:
+    app_bg = "#0f172a"
+    card_bg = "#1e293b"
+    card_border = "#334155"
+    text_primary = "#f1f5f9"
+    text_secondary = "#94a3b8"
+    hr_color = "#334155"
+    alert_bg = "#1e293b"
+    alert_text = "#f1f5f9"
+else:
+    app_bg = "#f4f7fb"
+    card_bg = "white"
+    card_border = "#dbe5f0"
+    text_primary = "#0b1f3a"
+    text_secondary = "#64748b"
+    hr_color = "#dbe5f0"
+    alert_bg = "white"
+    alert_text = "#0b1f3a"
+
+st.markdown(f"""
+<style>
+
+/* =========================================
+   GENERAL PAGE
+   ========================================= */
+
+#MainMenu {{
+    visibility: hidden;
+}}
+
+footer {{
+    visibility: hidden;
+}}
+
+/* Hide the Deploy button / toolbar - but the sidebar's re-expand
+   arrow (stExpandSidebarButton) actually lives INSIDE this same
+   toolbar element, so hiding the whole toolbar hides that arrow
+   too. Once the sidebar collapses, there's nothing left to click
+   to bring it back. Fix: hide the toolbar, then force the
+   re-expand button specifically back to visible. */
+[data-testid="stToolbar"] {{
+    visibility: hidden;
+}}
+
+/* The <header> itself has its own full-width background, which
+   becomes a visible white bar across the whole page now that
+   something inside it (the arrow) is visible again. Make the
+   header transparent so only the arrow shows, not a full strip. */
+header, [data-testid="stHeader"] {{
+    background: transparent;
+}}
+
+[data-testid="stExpandSidebarButton"],
+button[data-testid="stExpandSidebarButton"],
+[data-testid="collapsedControl"] {{
+    visibility: visible !important;
+    background-color: white !important;
+    border-radius: 8px !important;
+    box-shadow: 0 2px 6px rgba(11, 31, 58, 0.15) !important;
+}}
+
+[data-testid="stDecoration"] {{
+    visibility: hidden;
+}}
+
+.stApp {{
+    background-color: {app_bg};
+}}
+
+.block-container {{
+    padding-top: 2rem;
+    padding-bottom: 2rem;
+}}
+
+
+/* =========================================
+   SIDEBAR
+   ========================================= */
+
+[data-testid="stSidebar"] {{
+    background: linear-gradient(
+        180deg,
+        #071426 0%,
+        #0b1f3a 55%,
+        #102b4c 100%
+    );
+}}
+
+[data-testid="stSidebar"] * {{
+    color: white;
+}}
+
+
+/* Sidebar radio buttons */
+
+[data-testid="stSidebar"] .stRadio label {{
+    color: #dbeafe !important;
+}}
+
+/* Sidebar Brand */
+
+.sidebar-brand {{
+    padding: 20px 10px 10px 10px;
+}}
+
+.brand-icon {{
+    font-size: 32px;
+    margin-bottom: 5px;
+}}
+
+.brand-title {{
+    font-size: 25px;
+    font-weight: 800;
+    color: white;
+}}
+
+.brand-subtitle {{
+    font-size: 14px;
+    color: #b8c7d9;
+    margin-top: 5px;
+}}
+
+.sidebar-nav-title {{
+    font-size: 15px;
+    font-weight: 700;
+    color: #dbeafe;
+    margin: 10px 5px 8px 5px;
+}}
+
+[data-testid="stSidebar"] hr {{
+    border-color: #29415f;
+    margin: 10px 5px;
+}}
+
+[data-testid="stSidebar"] [data-testid="stRadio"] label {{
+    color: #dbeafe !important;
+    font-size: 15px;
+}}
+
+[data-testid="stSidebar"] [data-testid="stRadio"] > div {{
+    gap: 8px;
+}}
+
+/* =========================================
+   MAIN TITLE
+   ========================================= */
+
+.main-title {{
+    font-size: 42px;
+    font-weight: 800;
+    color: {text_primary};
+    margin-bottom: 5px;
+}}
+
+.subtitle {{
+    font-size: 17px;
+    color: {text_secondary};
+    margin-bottom: 25px;
+}}
+
+
+/* =========================================
+   SECTION TITLES
+   ========================================= */
+
+.section-title {{
+    font-size: 25px;
+    font-weight: 700;
+    color: {text_primary};
+    margin-top: 20px;
+    margin-bottom: 15px;
+}}
+
+
+/* =========================================
+   METRIC CARDS
+   ========================================= */
+
+[data-testid="stMetric"] {{
+    background-color: {card_bg};
+    border: 1px solid {card_border};
+    border-radius: 14px;
+    padding: 18px;
+    box-shadow: 0 3px 10px rgba(11, 31, 58, 0.08);
+}}
+
+[data-testid="stMetricLabel"] {{
+    color: {text_secondary} !important;
+    font-weight: 600;
+}}
+
+[data-testid="stMetricValue"] {{
+    color: {text_primary} !important;
+    font-weight: 800;
+}}
+
+
+/* =========================================
+   BUTTONS
+   ========================================= */
+
+.stButton > button {{
+    background: linear-gradient(
+        90deg,
+        #0b5ed7,
+        #087f8c
+    );
+
+    color: white;
+
+    border: none;
+
+    border-radius: 10px;
+
+    padding: 12px 20px;
+
+    font-size: 17px;
+
+    font-weight: 700;
+
+    box-shadow: 0 4px 10px rgba(11, 94, 215, 0.25);
+
+    transition: 0.2s;
+}}
+
+.stButton > button:hover {{
+    background: linear-gradient(
+        90deg,
+        #084298,
+        #05666f
+    );
+
+    color: white;
+
+    transform: translateY(-2px);
+
+    box-shadow: 0 6px 15px rgba(11, 94, 215, 0.35);
+}}
+
+
+/* =========================================
+   INPUT BOXES
+   ========================================= */
+
+[data-baseweb="select"] > div {{
+    border-radius: 8px;
+    border-color: {card_border};
+    background-color: {card_bg};
+}}
+
+[data-testid="stNumberInput"] input {{
+    border-radius: 8px;
+}}
+
+
+/* =========================================
+   HEADERS
+   ========================================= */
+
+h1, h2, h3 {{
+    color: {text_primary} !important;
+}}
+
+
+/* =========================================
+   BODY / GENERAL TEXT
+   ========================================= */
+
+.stMarkdown, .stText, p, label {{
+    color: {text_primary};
+}}
+
+
+/* =========================================
+   ALERT / INFO / SUCCESS / WARNING BOXES
+   ========================================= */
+
+[data-testid="stAlert"] {{
+    border-radius: 12px;
+    background-color: {alert_bg};
+    color: {alert_text};
+}}
+
+[data-testid="stAlert"][kind="info"] {{
+    border-left: 5px solid #0b5ed7;
+}}
+
+
+/* =========================================
+   DIVIDERS
+   ========================================= */
+
+hr {{
+    border-color: {hr_color};
+}}
+
+
+/* =========================================
+   DATAFRAME
+   ========================================= */
+
+[data-testid="stDataFrame"] {{
+    border-radius: 12px;
+    overflow: hidden;
+}}
+
+
+/* =========================================
+   FOOTER
+   ========================================= */
+
+.small-text {{
+    color: {text_secondary};
+    font-size: 14px;
+}}
+
+</style>
+""", unsafe_allow_html=True)
+
+
+def call_gemini_with_retry(fn, max_attempts=3, base_delay=1.5):
+    """
+    Calls fn() and retries on transient errors (like a 503
+    'model overloaded' or 429 rate-limit response), which are
+    momentary and usually succeed a few seconds later.
+    Re-raises the last error if every attempt fails.
+    """
+    last_error = None
+
+    for attempt in range(max_attempts):
+        try:
+            return fn()
+        except Exception as e:
+            last_error = e
+            error_text = str(e)
+
+            is_transient = (
+                "503" in error_text
+                or "UNAVAILABLE" in error_text
+                or "429" in error_text
+                or "RESOURCE_EXHAUSTED" in error_text
+            )
+
+            if not is_transient or attempt == max_attempts - 1:
+                raise
+
+            time.sleep(base_delay * (attempt + 1))
+
+    raise last_error
+
 
 def generate_prediction_explanation(
     prediction,
@@ -446,12 +527,19 @@ Do not claim that the prediction is guaranteed.
 """
 
     try:
-        response = client.models.generate_content(
-            model="gemini-3.6-flash",
-            contents=prompt
+        response = call_gemini_with_retry(
+            lambda: client.models.generate_content(
+                model="gemini-3.6-flash",
+                contents=prompt
+            )
         )
     except Exception as e:
-        return f"AI explanation failed: {e}"
+        return (
+            "AI explanation failed after retrying: "
+            f"{e}\n\nThis is often a temporary overload on "
+            "Google's side - try clicking the button again "
+            "in a moment."
+        )
 
     return response.text
 
@@ -894,12 +982,19 @@ Use only the provided project information.
             with st.chat_message("assistant"):
                 with st.spinner("AI is thinking..."):
                     try:
-                        response = st.session_state["chat_session"].send_message(
-                            question
+                        response = call_gemini_with_retry(
+                            lambda: st.session_state["chat_session"].send_message(
+                                question
+                            )
                         )
                         answer = response.text
                     except Exception as e:
-                        answer = f"AI Assistant failed: {e}"
+                        answer = (
+                            "AI Assistant failed after retrying: "
+                            f"{e}\n\nThis is often a temporary overload "
+                            "on Google's side - try asking again in a "
+                            "moment."
+                        )
 
                 st.write(answer)
 
