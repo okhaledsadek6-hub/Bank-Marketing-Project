@@ -253,8 +253,8 @@ button[data-testid="stExpandSidebarButton"],
 
     background: linear-gradient(
         90deg,
-        #0b5ed7 0%,
-        #087f8c 50%,
+        #7c3aed 0%,
+        #d6336c 50%,
         #f2a900 100%
     );
     -webkit-background-clip: text;
