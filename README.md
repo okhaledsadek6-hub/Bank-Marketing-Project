@@ -242,6 +242,7 @@ Seaborn
 Scikit-learn
 Joblib
 Streamlit
+google-genai
 Jupyter Notebook / Google Colab
 
 
