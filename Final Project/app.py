@@ -38,13 +38,20 @@ footer {
     visibility: hidden;
 }
 
-/* Hide the Deploy button / toolbar only - NOT the whole header,
-   since the sidebar collapse/expand arrow lives inside <header>.
-   Hiding the entire header (as `header { visibility: hidden; }`
-   would) also hides that arrow, so once the sidebar collapses
-   there is nothing left to click to bring it back. */
+/* Hide the Deploy button / toolbar - but the sidebar's re-expand
+   arrow (stExpandSidebarButton) actually lives INSIDE this same
+   toolbar element, so hiding the whole toolbar hides that arrow
+   too. Once the sidebar collapses, there's nothing left to click
+   to bring it back. Fix: hide the toolbar, then force the
+   re-expand button specifically back to visible. */
 [data-testid="stToolbar"] {
     visibility: hidden;
+}
+
+[data-testid="stExpandSidebarButton"],
+button[data-testid="stExpandSidebarButton"],
+[data-testid="collapsedControl"] {
+    visibility: visible !important;
 }
 
 [data-testid="stDecoration"] {
