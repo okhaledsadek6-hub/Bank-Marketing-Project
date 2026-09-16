@@ -120,10 +120,7 @@ with st.sidebar:
     if "dark_mode" not in st.session_state:
         st.session_state["dark_mode"] = False
 
-    st.session_state["dark_mode"] = st.toggle(
-        "🌙 Dark Mode",
-        value=st.session_state["dark_mode"]
-    )
+    st.toggle("🌙 Dark Mode", key="dark_mode")
 
 dark_mode = st.session_state["dark_mode"]
 
@@ -380,10 +377,46 @@ button[data-testid="stExpandSidebarButton"],
     border-radius: 8px;
     border-color: {card_border};
     background-color: {card_bg};
+    color: {text_primary};
 }}
 
-[data-testid="stNumberInput"] input {{
+[data-testid="stNumberInput"] input,
+[data-testid="stTextInput"] input,
+[data-testid="stTextArea"] textarea {{
     border-radius: 8px;
+    background-color: {card_bg};
+    color: {text_primary};
+    border-color: {card_border};
+}}
+
+/* Selectbox dropdown menu (rendered in a portal, still matched by
+   this global stylesheet) and its option list text/background */
+[data-baseweb="popover"] [data-baseweb="menu"],
+[data-baseweb="popover"] ul {{
+    background-color: {card_bg} !important;
+}}
+
+[data-baseweb="popover"] [role="option"] {{
+    color: {text_primary} !important;
+}}
+
+/* Radio buttons in the MAIN content area (not the sidebar nav,
+   which is always on the dark navy background regardless of theme) */
+[data-testid="stMain"] [data-testid="stRadio"] label {{
+    color: {text_primary} !important;
+}}
+
+/* Chat input box and chat message bubbles on the AI Assistant page */
+[data-testid="stChatInput"] textarea {{
+    background-color: {card_bg} !important;
+    color: {text_primary} !important;
+    border-color: {card_border} !important;
+}}
+
+[data-testid="stChatMessage"] {{
+    background-color: {card_bg};
+    border: 1px solid {card_border};
+    border-radius: 12px;
 }}
 
 
