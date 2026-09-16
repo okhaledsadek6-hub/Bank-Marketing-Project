@@ -109,59 +109,25 @@ with st.sidebar:
         unsafe_allow_html=True
     )
 
-    # ---------------------------------------------
-    # LIGHT / DARK MODE TOGGLE
-    # ---------------------------------------------
-    # Streamlit's own built-in theme can't be switched at runtime
-    # from Python (only via config.toml, before the app starts),
-    # so this app implements its own light/dark mode by storing
-    # the choice in session_state and rebuilding the CSS below
-    # with a different color palette depending on the value.
-    if "dark_mode" not in st.session_state:
-        st.session_state["dark_mode"] = False
-
-    st.toggle("🌙 Dark Mode", key="dark_mode")
-
-dark_mode = st.session_state["dark_mode"]
-
 
 # =========================================================
-# CUSTOM CSS (built dynamically based on the theme above)
+# CUSTOM CSS
 # =========================================================
 
-if dark_mode:
-    app_bg = "#0f172a"
-    card_bg = "#1e293b"
-    card_border = "#334155"
-    text_primary = "#f1f5f9"
-    text_secondary = "#94a3b8"
-    hr_color = "#334155"
-    alert_bg = "#1e293b"
-    alert_text = "#f1f5f9"
-else:
-    app_bg = "#f4f7fb"
-    card_bg = "white"
-    card_border = "#dbe5f0"
-    text_primary = "#0b1f3a"
-    text_secondary = "#64748b"
-    hr_color = "#dbe5f0"
-    alert_bg = "white"
-    alert_text = "#0b1f3a"
-
-st.markdown(f"""
+st.markdown("""
 <style>
 
 /* =========================================
    GENERAL PAGE
    ========================================= */
 
-#MainMenu {{
+#MainMenu {
     visibility: hidden;
-}}
+}
 
-footer {{
+footer {
     visibility: hidden;
-}}
+}
 
 /* Hide the Deploy button / toolbar - but the sidebar's re-expand
    arrow (stExpandSidebarButton) actually lives INSIDE this same
@@ -169,168 +135,168 @@ footer {{
    too. Once the sidebar collapses, there's nothing left to click
    to bring it back. Fix: hide the toolbar, then force the
    re-expand button specifically back to visible. */
-[data-testid="stToolbar"] {{
+[data-testid="stToolbar"] {
     visibility: hidden;
-}}
+}
 
 /* The <header> itself has its own full-width background, which
    becomes a visible white bar across the whole page now that
    something inside it (the arrow) is visible again. Make the
    header transparent so only the arrow shows, not a full strip. */
-header, [data-testid="stHeader"] {{
+header, [data-testid="stHeader"] {
     background: transparent;
-}}
+}
 
 [data-testid="stExpandSidebarButton"],
 button[data-testid="stExpandSidebarButton"],
-[data-testid="collapsedControl"] {{
+[data-testid="collapsedControl"] {
     visibility: visible !important;
     background-color: white !important;
     border-radius: 8px !important;
     box-shadow: 0 2px 6px rgba(11, 31, 58, 0.15) !important;
-}}
+}
 
-[data-testid="stDecoration"] {{
+[data-testid="stDecoration"] {
     visibility: hidden;
-}}
+}
 
-.stApp {{
-    background-color: {app_bg};
-}}
+.stApp {
+    background-color: #f4f7fb;
+}
 
-.block-container {{
+.block-container {
     padding-top: 2rem;
     padding-bottom: 2rem;
-}}
+}
 
 
 /* =========================================
    SIDEBAR
    ========================================= */
 
-[data-testid="stSidebar"] {{
+[data-testid="stSidebar"] {
     background: linear-gradient(
         180deg,
         #071426 0%,
         #0b1f3a 55%,
         #102b4c 100%
     );
-}}
+}
 
-[data-testid="stSidebar"] * {{
+[data-testid="stSidebar"] * {
     color: white;
-}}
+}
 
 
 /* Sidebar radio buttons */
 
-[data-testid="stSidebar"] .stRadio label {{
+[data-testid="stSidebar"] .stRadio label {
     color: #dbeafe !important;
-}}
+}
 
 /* Sidebar Brand */
 
-.sidebar-brand {{
+.sidebar-brand {
     padding: 20px 10px 10px 10px;
-}}
+}
 
-.brand-icon {{
+.brand-icon {
     font-size: 32px;
     margin-bottom: 5px;
-}}
+}
 
-.brand-title {{
+.brand-title {
     font-size: 25px;
     font-weight: 800;
     color: white;
-}}
+}
 
-.brand-subtitle {{
+.brand-subtitle {
     font-size: 14px;
     color: #b8c7d9;
     margin-top: 5px;
-}}
+}
 
-.sidebar-nav-title {{
+.sidebar-nav-title {
     font-size: 15px;
     font-weight: 700;
     color: #dbeafe;
     margin: 10px 5px 8px 5px;
-}}
+}
 
-[data-testid="stSidebar"] hr {{
+[data-testid="stSidebar"] hr {
     border-color: #29415f;
     margin: 10px 5px;
-}}
+}
 
-[data-testid="stSidebar"] [data-testid="stRadio"] label {{
+[data-testid="stSidebar"] [data-testid="stRadio"] label {
     color: #dbeafe !important;
     font-size: 15px;
-}}
+}
 
-[data-testid="stSidebar"] [data-testid="stRadio"] > div {{
+[data-testid="stSidebar"] [data-testid="stRadio"] > div {
     gap: 8px;
-}}
+}
 
 /* =========================================
    MAIN TITLE
    ========================================= */
 
-.main-title {{
+.main-title {
     font-size: 42px;
     font-weight: 800;
-    color: {text_primary};
+    color: #0b1f3a;
     margin-bottom: 5px;
-}}
+}
 
-.subtitle {{
+.subtitle {
     font-size: 17px;
-    color: {text_secondary};
+    color: #64748b;
     margin-bottom: 25px;
-}}
+}
 
 
 /* =========================================
    SECTION TITLES
    ========================================= */
 
-.section-title {{
+.section-title {
     font-size: 25px;
     font-weight: 700;
-    color: {text_primary};
+    color: #0b1f3a;
     margin-top: 20px;
     margin-bottom: 15px;
-}}
+}
 
 
 /* =========================================
    METRIC CARDS
    ========================================= */
 
-[data-testid="stMetric"] {{
-    background-color: {card_bg};
-    border: 1px solid {card_border};
+[data-testid="stMetric"] {
+    background-color: white;
+    border: 1px solid #dbe5f0;
     border-radius: 14px;
     padding: 18px;
     box-shadow: 0 3px 10px rgba(11, 31, 58, 0.08);
-}}
+}
 
-[data-testid="stMetricLabel"] {{
-    color: {text_secondary} !important;
+[data-testid="stMetricLabel"] {
+    color: #64748b !important;
     font-weight: 600;
-}}
+}
 
-[data-testid="stMetricValue"] {{
-    color: {text_primary} !important;
+[data-testid="stMetricValue"] {
+    color: #0b1f3a !important;
     font-weight: 800;
-}}
+}
 
 
 /* =========================================
    BUTTONS
    ========================================= */
 
-.stButton > button {{
+.stButton > button {
     background: linear-gradient(
         90deg,
         #0b5ed7,
@@ -352,9 +318,9 @@ button[data-testid="stExpandSidebarButton"],
     box-shadow: 0 4px 10px rgba(11, 94, 215, 0.25);
 
     transition: 0.2s;
-}}
+}
 
-.stButton > button:hover {{
+.stButton > button:hover {
     background: linear-gradient(
         90deg,
         #084298,
@@ -366,120 +332,77 @@ button[data-testid="stExpandSidebarButton"],
     transform: translateY(-2px);
 
     box-shadow: 0 6px 15px rgba(11, 94, 215, 0.35);
-}}
+}
 
 
 /* =========================================
    INPUT BOXES
    ========================================= */
 
-[data-baseweb="select"] > div {{
+[data-baseweb="select"] > div {
     border-radius: 8px;
-    border-color: {card_border};
-    background-color: {card_bg};
-    color: {text_primary};
-}}
+    border-color: #cbd5e1;
+}
 
-[data-testid="stNumberInput"] input,
-[data-testid="stTextInput"] input,
-[data-testid="stTextArea"] textarea {{
+[data-testid="stNumberInput"] input {
     border-radius: 8px;
-    background-color: {card_bg};
-    color: {text_primary};
-    border-color: {card_border};
-}}
-
-/* Selectbox dropdown menu (rendered in a portal, still matched by
-   this global stylesheet) and its option list text/background */
-[data-baseweb="popover"] [data-baseweb="menu"],
-[data-baseweb="popover"] ul {{
-    background-color: {card_bg} !important;
-}}
-
-[data-baseweb="popover"] [role="option"] {{
-    color: {text_primary} !important;
-}}
-
-/* Radio buttons in the MAIN content area (not the sidebar nav,
-   which is always on the dark navy background regardless of theme) */
-[data-testid="stMain"] [data-testid="stRadio"] label {{
-    color: {text_primary} !important;
-}}
-
-/* Chat input box and chat message bubbles on the AI Assistant page */
-[data-testid="stChatInput"] textarea {{
-    background-color: {card_bg} !important;
-    color: {text_primary} !important;
-    border-color: {card_border} !important;
-}}
-
-[data-testid="stChatMessage"] {{
-    background-color: {card_bg};
-    border: 1px solid {card_border};
-    border-radius: 12px;
-}}
+}
 
 
 /* =========================================
    HEADERS
    ========================================= */
 
-h1, h2, h3 {{
-    color: {text_primary} !important;
-}}
+h1, h2, h3 {
+    color: #0b1f3a !important;
+}
 
 
 /* =========================================
-   BODY / GENERAL TEXT
+   SUCCESS MESSAGE
    ========================================= */
 
-.stMarkdown, .stText, p, label {{
-    color: {text_primary};
-}}
-
-
-/* =========================================
-   ALERT / INFO / SUCCESS / WARNING BOXES
-   ========================================= */
-
-[data-testid="stAlert"] {{
+[data-testid="stAlert"] {
     border-radius: 12px;
-    background-color: {alert_bg};
-    color: {alert_text};
-}}
-
-[data-testid="stAlert"][kind="info"] {{
-    border-left: 5px solid #0b5ed7;
-}}
+}
 
 
 /* =========================================
    DIVIDERS
    ========================================= */
 
-hr {{
-    border-color: {hr_color};
-}}
+hr {
+    border-color: #dbe5f0;
+}
 
 
 /* =========================================
    DATAFRAME
    ========================================= */
 
-[data-testid="stDataFrame"] {{
+[data-testid="stDataFrame"] {
     border-radius: 12px;
     overflow: hidden;
-}}
+}
+
+
+/* =========================================
+   INFO BOX
+   ========================================= */
+
+[data-testid="stAlert"][kind="info"] {
+    border-left: 5px solid #0b5ed7;
+}
 
 
 /* =========================================
    FOOTER
    ========================================= */
 
-.small-text {{
-    color: {text_secondary};
+.small-text {
+    color: #64748b;
     font-size: 14px;
-}}
+}
 
 </style>
 """, unsafe_allow_html=True)
