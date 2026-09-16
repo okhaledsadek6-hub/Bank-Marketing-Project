@@ -131,8 +131,6 @@ The model is evaluated using:
 - Recall
 - F1 Score
 - Confusion Matrix
-- ROC Curve
-- ROC-AUC
 
 The exact evaluation results are generated in the notebook and saved in:
 
@@ -173,6 +171,24 @@ Allows the user to enter customer information and receive:
 - Subscription probability
 - No-subscription probability
 
+### 💬 AI Marketing Assistant
+
+The GUI also contains an AI Marketing Assistant.
+
+Users can ask questions about:
+
+The Machine Learning model
+Model performance
+Accuracy
+Precision
+Recall
+F1 Score
+Important features
+Marketing insights
+The project methodology
+
+The AI Assistant uses the actual saved project results instead of inventing model results.
+
 ### 📊 Data Analysis
 Displays:
 - Dataset statistics
@@ -187,9 +203,7 @@ Displays:
 - Precision
 - Recall
 - F1 Score
-- ROC-AUC
 - Confusion Matrix
-- ROC Curve
 
 ### ⭐ Feature Importance
 Displays:
