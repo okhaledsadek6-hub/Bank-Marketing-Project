@@ -5,6 +5,9 @@ import joblib
 import matplotlib.pyplot as plt
 import os
 import time
+import json
+import uuid
+from datetime import datetime
 from google import genai
 from google.genai import types
 
@@ -24,6 +27,63 @@ st.set_page_config(
 # LOAD FILES
 # =========================================================
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+
+# =========================================================
+# PERSISTENT CHAT STORAGE
+# =========================================================
+# Conversations are saved to a JSON file on disk, so they survive
+# page refreshes and app restarts - not just the current browser
+# session (which is all st.session_state keeps).
+CHAT_HISTORY_FILE = os.path.join(BASE_DIR, "chat_history.json")
+
+
+def load_chat_history():
+    if not os.path.exists(CHAT_HISTORY_FILE):
+        return []
+
+    try:
+        with open(CHAT_HISTORY_FILE, "r", encoding="utf-8") as f:
+            return json.load(f)
+    except (json.JSONDecodeError, OSError):
+        return []
+
+
+def save_chat_history(history):
+    with open(CHAT_HISTORY_FILE, "w", encoding="utf-8") as f:
+        json.dump(history, f, indent=2, ensure_ascii=False)
+
+
+def persist_current_conversation(conversation_id, messages):
+    """Save (or update) the current conversation in the history file."""
+    if not messages:
+        return
+
+    history = load_chat_history()
+
+    for entry in history:
+        if entry["id"] == conversation_id:
+            entry["messages"] = messages
+            entry["updated_at"] = datetime.now().isoformat(timespec="seconds")
+            save_chat_history(history)
+            return
+
+    history.append({
+        "id": conversation_id,
+        "started_at": datetime.now().isoformat(timespec="seconds"),
+        "updated_at": datetime.now().isoformat(timespec="seconds"),
+        "messages": messages
+    })
+    save_chat_history(history)
+
+
+def delete_conversation(conversation_id):
+    history = load_chat_history()
+    history = [entry for entry in history if entry["id"] != conversation_id]
+    save_chat_history(history)
+
+
+def delete_all_conversations():
+    save_chat_history([])
 
 
 @st.cache_resource
@@ -951,11 +1011,82 @@ Use only the provided project information.
         if "chat_messages" not in st.session_state:
             st.session_state["chat_messages"] = []
 
-        if st.button("🗑️ Clear Chat"):
-            del st.session_state["chat_session"]
-            del st.session_state["chat_system_instruction"]
-            st.session_state["chat_messages"] = []
-            st.rerun()
+        # A stable ID for this browser session's conversation, so it
+        # can be found again in the saved-history file to update or
+        # delete it, rather than always creating a new entry.
+        if "conversation_id" not in st.session_state:
+            st.session_state["conversation_id"] = str(uuid.uuid4())
+
+        col_clear, col_saved = st.columns([1, 1])
+
+        with col_clear:
+            if st.button("🗑️ Clear Chat", use_container_width=True):
+                delete_conversation(st.session_state["conversation_id"])
+                del st.session_state["chat_session"]
+                del st.session_state["chat_system_instruction"]
+                st.session_state["chat_messages"] = []
+                st.session_state["conversation_id"] = str(uuid.uuid4())
+                st.rerun()
+
+        with col_saved:
+            saved_conversations_open = st.button(
+                "📜 Saved Conversations", use_container_width=True
+            )
+
+        if saved_conversations_open:
+            st.session_state["show_saved_conversations"] = not st.session_state.get(
+                "show_saved_conversations", False
+            )
+
+        if st.session_state.get("show_saved_conversations", False):
+            with st.expander("📜 Saved Conversations", expanded=True):
+                history = load_chat_history()
+
+                if not history:
+                    st.caption("No saved conversations yet.")
+                else:
+                    if st.button("🗑️ Delete All Conversations"):
+                        delete_all_conversations()
+                        st.rerun()
+
+                    for entry in sorted(
+                        history, key=lambda e: e["updated_at"], reverse=True
+                    ):
+                        first_user_msg = next(
+                            (m["content"] for m in entry["messages"] if m["role"] == "user"),
+                            "(no messages)"
+                        )
+                        preview = (
+                            first_user_msg[:60] + "..."
+                            if len(first_user_msg) > 60
+                            else first_user_msg
+                        )
+
+                        col_label, col_load, col_delete = st.columns([5, 1, 1])
+
+                        with col_label:
+                            st.write(f"**{entry['updated_at']}** - {preview}")
+
+                        with col_load:
+                            if st.button("Load", key=f"load_{entry['id']}"):
+                                st.session_state["conversation_id"] = entry["id"]
+                                st.session_state["chat_messages"] = entry["messages"]
+                                # Force the chat session to rebuild so the
+                                # model's own memory matches what's loaded.
+                                if "chat_session" in st.session_state:
+                                    del st.session_state["chat_session"]
+                                if "chat_system_instruction" in st.session_state:
+                                    del st.session_state["chat_system_instruction"]
+                                st.session_state["show_saved_conversations"] = False
+                                st.rerun()
+
+                        with col_delete:
+                            if st.button("🗑️", key=f"delete_{entry['id']}"):
+                                delete_conversation(entry["id"])
+                                if entry["id"] == st.session_state["conversation_id"]:
+                                    st.session_state["chat_messages"] = []
+                                    st.session_state["conversation_id"] = str(uuid.uuid4())
+                                st.rerun()
 
         # Replay the conversation so far.
         for message in st.session_state["chat_messages"]:
@@ -993,6 +1124,11 @@ Use only the provided project information.
 
             st.session_state["chat_messages"].append(
                 {"role": "assistant", "content": answer}
+            )
+
+            persist_current_conversation(
+                st.session_state["conversation_id"],
+                st.session_state["chat_messages"]
             )
 
 
