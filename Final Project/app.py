@@ -112,6 +112,36 @@ def load_data():
     )
 
 
+@st.cache_data
+def compute_dataset_stats(data):
+    """Precomputed aggregate stats from the full dataset, so the AI
+    Assistant can answer aggregate questions without needing the
+    raw data - this is cheap and computed once, not per chat turn."""
+    subscribed = data[data["y"] == "yes"]
+    not_subscribed = data[data["y"] == "no"]
+
+    def rate_by(column):
+        return (
+            data.groupby(column)["y"]
+            .apply(lambda s: round((s == "yes").mean() * 100, 1))
+            .to_dict()
+        )
+
+    return {
+        "total_records": len(data),
+        "subscription_rate": (data["y"] == "yes").mean() * 100,
+        "avg_age": data["age"].mean(),
+        "avg_age_subscribed": subscribed["age"].mean(),
+        "avg_age_not_subscribed": not_subscribed["age"].mean(),
+        "avg_duration_subscribed": subscribed["duration"].mean(),
+        "avg_duration_not_subscribed": not_subscribed["duration"].mean(),
+        "rate_by_job": rate_by("job"),
+        "rate_by_education": rate_by("education"),
+        "rate_by_marital": rate_by("marital"),
+        "rate_by_contact": rate_by("contact"),
+    }
+
+
 @st.cache_resource
 def load_gemini():
     if "GEMINI_API_KEY" not in st.secrets:
@@ -536,6 +566,47 @@ def is_daily_quota_error(error):
     return "PerDay" in str(error) or "RequestsPerDay" in str(error)
 
 
+def query_bank_dataset(pandas_query: str) -> str:
+    """Runs a read-only filter on the full bank marketing dataset and
+    reports how many rows match, plus a small sample of them. Use this
+    whenever the user asks a question that requires looking at the
+    actual data rather than the precomputed summary stats already
+    provided - e.g. "how many customers over 60 subscribed?" or
+    "show me students who were contacted by cellular".
+
+    Available columns: age, job, marital, education, default, housing,
+    loan, contact, month, day_of_week, duration, campaign, pdays,
+    previous, poutcome, euribor3m, y, and three columns with dots in
+    their names that must be wrapped in backticks in the query string:
+    `emp.var.rate`, `cons.price.idx`, `cons.conf.idx`, `nr.employed`.
+
+    Args:
+        pandas_query: A pandas DataFrame.query() filter expression,
+            for example "age > 60 and y == 'yes'" or
+            "job == 'student' and contact == 'cellular'".
+
+    Returns:
+        A short text summary: the number of matching rows, and up to
+        5 sample rows. Never returns the full dataset.
+    """
+    forbidden_tokens = [
+        "import", "__", "exec(", "eval(", "os.", "sys.", "open(", "lambda"
+    ]
+    if any(tok in pandas_query for tok in forbidden_tokens):
+        return "That query is not allowed."
+
+    try:
+        result = df.query(pandas_query)
+    except Exception as e:
+        return f"Query failed: {e}"
+
+    if len(result) == 0:
+        return "0 rows matched that query."
+
+    sample = result.head(5).to_string(index=False)
+    return f"{len(result):,} rows matched. Sample of up to 5 rows:\n{sample}"
+
+
 def generate_prediction_explanation(
     prediction,
     probability,
@@ -873,6 +944,19 @@ elif page == "🔮 Make Prediction":
         st.session_state["no_probability"] = probability_dict["no"]
         st.session_state["input_data"] = input_data
 
+        # Also keep a running history of every prediction made this
+        # session, so the AI Assistant can be asked about more than
+        # just the single most recent one (e.g. "compare my last two").
+        if "prediction_history" not in st.session_state:
+            st.session_state["prediction_history"] = []
+
+        st.session_state["prediction_history"].append({
+            "timestamp": datetime.now(APP_TIMEZONE).strftime("%b %d, %Y - %I:%M %p"),
+            "prediction": str(prediction),
+            "yes_probability": float(probability_dict["yes"]),
+            "customer": input_data.iloc[0].to_dict()
+        })
+
     # ---------------------------------------------
     # PREDICTION RESULT (rendered from session_state so it
     # persists across the AI-explanation button's rerun)
@@ -978,19 +1062,44 @@ elif page == "🤖 AI Assistant":
             .to_string(index=False)
         )
 
-        # If the user already ran a prediction on the Make Prediction
-        # page, include it here so the assistant can answer questions
-        # about "the prediction" / "this customer" too.
-        prediction_context = "The user has not run a prediction yet on the Make Prediction page."
+        # Precomputed aggregate stats from the full dataset, so the
+        # assistant can answer aggregate questions (averages, rates
+        # by category) without needing the raw data in its context.
+        stats = compute_dataset_stats(df)
 
-        if "prediction" in st.session_state:
-            customer_data = st.session_state["input_data"].iloc[0].to_dict()
+        dataset_stats_text = f"""Dataset-wide statistics (from all {stats['total_records']:,} records):
+- Overall subscription rate: {stats['subscription_rate']:.1f}%
+- Average age (all customers): {stats['avg_age']:.1f}
+- Average age (subscribers): {stats['avg_age_subscribed']:.1f}
+- Average age (non-subscribers): {stats['avg_age_not_subscribed']:.1f}
+- Average call duration (subscribers): {stats['avg_duration_subscribed']:.0f} seconds
+- Average call duration (non-subscribers): {stats['avg_duration_not_subscribed']:.0f} seconds
+- Subscription rate by job (%): {stats['rate_by_job']}
+- Subscription rate by education (%): {stats['rate_by_education']}
+- Subscription rate by marital status (%): {stats['rate_by_marital']}
+- Subscription rate by contact type (%): {stats['rate_by_contact']}"""
 
-            prediction_context = f"""The user's most recent result from the Make Prediction page:
+        # If the user already ran one or more predictions on the Make
+        # Prediction page, include the recent history here so the
+        # assistant can answer questions about them - not just the
+        # single latest one.
+        prediction_history = st.session_state.get("prediction_history", [])
 
-Predicted outcome: {st.session_state['prediction']}
-Probability of subscribing: {st.session_state['yes_probability']:.2%}
-Customer details used for that prediction: {customer_data}"""
+        if not prediction_history:
+            prediction_context = "The user has not run any predictions yet on the Make Prediction page."
+        else:
+            recent = prediction_history[-5:]
+            lines = [
+                f"{i}. [{entry['timestamp']}] Prediction: {entry['prediction']}, "
+                f"Probability of subscribing: {entry['yes_probability']:.2%}, "
+                f"Customer: {entry['customer']}"
+                for i, entry in enumerate(recent, 1)
+            ]
+            prediction_context = (
+                "The user's prediction history from the Make Prediction "
+                "page (most recent last, showing up to the last 5):\n"
+                + "\n".join(lines)
+            )
 
         system_instruction = f"""
 You are the AI assistant for a Bank Marketing
@@ -1017,9 +1126,17 @@ F1 Score:
 Top features:
 {feature_info}
 
+{dataset_stats_text}
+
 {prediction_context}
 
-Do not invent model results or customer data beyond what is given above.
+You also have a tool, query_bank_dataset, that runs a read-only
+filter on the full dataset when a question needs to look at actual
+rows rather than the summary stats above (e.g. "how many customers
+over 60 subscribed"). Use it when relevant.
+
+Do not invent model results or customer data beyond what is given
+above or returned by the tool.
 Use only the provided project information.
 """
 
@@ -1035,7 +1152,8 @@ Use only the provided project information.
             st.session_state["chat_session"] = client.chats.create(
                 model="gemini-3.5-flash-lite",
                 config=types.GenerateContentConfig(
-                    system_instruction=system_instruction
+                    system_instruction=system_instruction,
+                    tools=[query_bank_dataset]
                 )
             )
             st.session_state["chat_system_instruction"] = system_instruction
