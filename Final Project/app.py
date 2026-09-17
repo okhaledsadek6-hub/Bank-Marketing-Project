@@ -1021,7 +1021,11 @@ Use only the provided project information.
 
         with col_clear:
             if st.button("🗑️ Clear Chat", use_container_width=True):
-                delete_conversation(st.session_state["conversation_id"])
+                # Only resets the active chat window - the saved
+                # copy of this conversation (if any) is left alone
+                # in the history file. Starting a new conversation_id
+                # means any new messages become a separate saved
+                # entry rather than overwriting the old one.
                 del st.session_state["chat_session"]
                 del st.session_state["chat_system_instruction"]
                 st.session_state["chat_messages"] = []
