@@ -8,6 +8,7 @@ import time
 import json
 import uuid
 from datetime import datetime
+from zoneinfo import ZoneInfo
 from google import genai
 from google.genai import types
 
@@ -27,6 +28,12 @@ st.set_page_config(
 # LOAD FILES
 # =========================================================
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+
+# Timezone used for saved-conversation timestamps. Change this to
+# whichever timezone you want displayed - the server (especially
+# on a cloud deployment) usually runs in UTC, which is why the
+# time can look "wrong" without this.
+APP_TIMEZONE = ZoneInfo("Africa/Cairo")
 
 # =========================================================
 # PERSISTENT CHAT STORAGE
@@ -63,14 +70,15 @@ def persist_current_conversation(conversation_id, messages):
     for entry in history:
         if entry["id"] == conversation_id:
             entry["messages"] = messages
-            entry["updated_at"] = datetime.now().isoformat(timespec="seconds")
+            entry["updated_at"] = datetime.now(APP_TIMEZONE).isoformat(timespec="seconds")
             save_chat_history(history)
             return
 
+    now = datetime.now(APP_TIMEZONE).isoformat(timespec="seconds")
     history.append({
         "id": conversation_id,
-        "started_at": datetime.now().isoformat(timespec="seconds"),
-        "updated_at": datetime.now().isoformat(timespec="seconds"),
+        "started_at": now,
+        "updated_at": now,
         "messages": messages
     })
     save_chat_history(history)
@@ -1069,7 +1077,14 @@ Use only the provided project information.
                         col_label, col_load, col_delete = st.columns([5, 1, 1])
 
                         with col_label:
-                            st.write(f"**{entry['updated_at']}** - {preview}")
+                            try:
+                                display_time = datetime.fromisoformat(
+                                    entry["updated_at"]
+                                ).strftime("%b %d, %Y - %I:%M %p")
+                            except ValueError:
+                                display_time = entry["updated_at"]
+
+                            st.write(f"**{display_time}** - {preview}")
 
                         with col_load:
                             if st.button("Load", key=f"load_{entry['id']}"):
