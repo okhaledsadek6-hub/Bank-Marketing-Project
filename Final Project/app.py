@@ -491,9 +491,14 @@ hr {
 
 def call_gemini_with_retry(fn, max_attempts=3, base_delay=1.5):
     """
-    Calls fn() and retries on transient errors (like a 503
-    'model overloaded' or 429 rate-limit response), which are
-    momentary and usually succeed a few seconds later.
+    Calls fn() and retries on genuinely transient errors (like a 503
+    'model overloaded', or a short-lived per-minute 429 rate limit),
+    which are momentary and usually succeed a few seconds later.
+
+    A per-DAY quota exhaustion (RequestsPerDay / PerDay in the error)
+    is NOT retried, since no amount of waiting a few seconds fixes
+    that - it only resets after the daily window rolls over.
+
     Re-raises the last error if every attempt fails.
     """
     last_error = None
@@ -505,11 +510,18 @@ def call_gemini_with_retry(fn, max_attempts=3, base_delay=1.5):
             last_error = e
             error_text = str(e)
 
+            is_daily_quota_exhausted = (
+                "PerDay" in error_text or "RequestsPerDay" in error_text
+            )
+
             is_transient = (
-                "503" in error_text
-                or "UNAVAILABLE" in error_text
-                or "429" in error_text
-                or "RESOURCE_EXHAUSTED" in error_text
+                not is_daily_quota_exhausted
+                and (
+                    "503" in error_text
+                    or "UNAVAILABLE" in error_text
+                    or "429" in error_text
+                    or "RESOURCE_EXHAUSTED" in error_text
+                )
             )
 
             if not is_transient or attempt == max_attempts - 1:
@@ -518,6 +530,10 @@ def call_gemini_with_retry(fn, max_attempts=3, base_delay=1.5):
             time.sleep(base_delay * (attempt + 1))
 
     raise last_error
+
+
+def is_daily_quota_error(error):
+    return "PerDay" in str(error) or "RequestsPerDay" in str(error)
 
 
 def generate_prediction_explanation(
@@ -566,11 +582,19 @@ Do not claim that the prediction is guaranteed.
     try:
         response = call_gemini_with_retry(
             lambda: client.models.generate_content(
-                model="gemini-3.6-flash",
+                model="gemini-3.5-flash-lite",
                 contents=prompt
             )
         )
     except Exception as e:
+        if is_daily_quota_error(e):
+            return (
+                "AI explanation failed: the free Gemini API plan's "
+                "daily request limit has been used up for today. "
+                "It resets after 24 hours - try again tomorrow, or "
+                "upgrade the API key's plan for a higher daily limit."
+            )
+
         return (
             "AI explanation failed after retrying: "
             f"{e}\n\nThis is often a temporary overload on "
@@ -1009,7 +1033,7 @@ Use only the provided project information.
             or st.session_state.get("chat_system_instruction") != system_instruction
         ):
             st.session_state["chat_session"] = client.chats.create(
-                model="gemini-3.6-flash",
+                model="gemini-3.5-flash-lite",
                 config=types.GenerateContentConfig(
                     system_instruction=system_instruction
                 )
@@ -1132,12 +1156,21 @@ Use only the provided project information.
                         )
                         answer = response.text
                     except Exception as e:
-                        answer = (
-                            "AI Assistant failed after retrying: "
-                            f"{e}\n\nThis is often a temporary overload "
-                            "on Google's side - try asking again in a "
-                            "moment."
-                        )
+                        if is_daily_quota_error(e):
+                            answer = (
+                                "AI Assistant failed: the free Gemini API "
+                                "plan's daily request limit has been used "
+                                "up for today. It resets after 24 hours - "
+                                "try again tomorrow, or upgrade the API "
+                                "key's plan for a higher daily limit."
+                            )
+                        else:
+                            answer = (
+                                "AI Assistant failed after retrying: "
+                                f"{e}\n\nThis is often a temporary overload "
+                                "on Google's side - try asking again in a "
+                                "moment."
+                            )
 
                 st.write(answer)
 
